@@ -4111,6 +4111,7 @@ zbookmark_mem_compare(const void *a, const void *b)
 int
 zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 {
+	printf("%s\n", "zpool_get_errlog called");
 	zfs_cmd_t zc = {"\0"};
 	libzfs_handle_t *hdl = zhp->zpool_hdl;
 	uint64_t count;

@@ -1608,15 +1608,39 @@ static int
 nvlist_lookup_common(nvlist_t *nvl, const char *name, data_type_t type,
     uint_t *nelem, void *data)
 {
-	if (name == NULL || nvl == NULL || nvl->nvl_priv == 0)
+	if (name == NULL || nvl == NULL || nvl->nvl_priv == 0){
+		if (strcmp("error_count", name)){
+			#if defined(_KERNEL)
+				printk("KERNEL %s\n", "nvlist_lookup_uint64 _KERNEL");
+			#else
+				printf("USER %s\n", "nvlist_lookup_uint64 USER");
+			#endif
+		}
 		return (EINVAL);
+	}
 
-	if (!(nvl->nvl_nvflag & (NV_UNIQUE_NAME | NV_UNIQUE_NAME_TYPE)))
+	if (!(nvl->nvl_nvflag & (NV_UNIQUE_NAME | NV_UNIQUE_NAME_TYPE))){
+		if (strcmp("error_count", name)){
+			#if defined(_KERNEL)
+				printk("KERNEL %s\n", "nvlist_lookup_uint64 _KERNEL");
+			#else
+				printf("USER %s\n", "nvlist_lookup_uint64 USER");
+			#endif
+		}
 		return (ENOTSUP);
+	}
 
 	nvpair_t *nvp = nvt_lookup_name_type(nvl, name, type);
-	if (nvp == NULL)
+	if (nvp == NULL){
+		if (strcmp("error_count", name)){
+			#if defined(_KERNEL)
+				printk("KERNEL %s\n", "nvlist_lookup_uint64 _KERNEL");
+			#else
+				printf("USER %s\n", "nvlist_lookup_uint64 USER");
+			#endif
+		}
 		return (ENOENT);
+	}
 
 	return (nvpair_value_common(nvp, type, nelem, data));
 }

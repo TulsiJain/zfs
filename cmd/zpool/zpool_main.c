@@ -7724,6 +7724,8 @@ status_callback(zpool_handle_t *zhp, void *data)
 		    &spares, &nspares) == 0)
 			print_spares(zhp, cbp, spares, nspares);
 
+		printf("%s\n", "here I am calling nvlist_lookup_uint64 again for error_count");
+
 		if (nvlist_lookup_uint64(config, ZPOOL_CONFIG_ERRCOUNT,
 		    &nerr) == 0) {
 			nvlist_t *nverrlist = NULL;
@@ -7736,7 +7738,7 @@ status_callback(zpool_handle_t *zhp, void *data)
 			if (nerr > 0 && nerr < 100 && !cbp->cb_verbose &&
 			    zpool_get_errlog(zhp, &nverrlist) == 0) {
 				nvpair_t *elem;
-
+				printf("%s\n", "Precise count by fetching the entire log");
 				elem = NULL;
 				nerr = 0;
 				while ((elem = nvlist_next_nvpair(nverrlist,
