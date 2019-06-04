@@ -1687,9 +1687,9 @@ nvlist_lookup_uint64(nvlist_t *nvl, const char *name, uint64_t *val)
 {
 	if (strcmp("error_count", name)){
 		#if defined(_KERNEL)
-			printk("%s\n", "nvlist_lookup_uint64");
+			printk("KERNEL %s\n", "nvlist_lookup_uint64 _KERNEL");
 		#else
-			printf("%s\n", "nvlist_lookup_uint64");
+			printf("USER %s\n", "nvlist_lookup_uint64 USER");
 		#endif
 	}
 	return (nvlist_lookup_common(nvl, name, DATA_TYPE_UINT64, NULL, val));
