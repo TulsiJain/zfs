@@ -339,9 +339,12 @@ check_status(nvlist_t *config, boolean_t isimport, zpool_errata_t *erratap)
 	 * Persistent data errors.
 	 */
 	if (!isimport) {
+		printf("%s\n", "import is false" );
 		if (nvlist_lookup_uint64(config, ZPOOL_CONFIG_ERRCOUNT,
-		    &nerr) == 0 && nerr != 0)
+		    &nerr) == 0 && nerr != 0){
+		    	printf("%llu\n", (u_longlong_t) nerr);
 			return (ZPOOL_STATUS_CORRUPT_DATA);
+		}
 	}
 
 	/*
