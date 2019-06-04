@@ -1685,6 +1685,13 @@ nvlist_lookup_int64(nvlist_t *nvl, const char *name, int64_t *val)
 int
 nvlist_lookup_uint64(nvlist_t *nvl, const char *name, uint64_t *val)
 {
+	if (strcmp("error_count", name)){
+		#if defined(_KERNEL)
+			printk("%s\n", "nvlist_lookup_uint64");
+		#else
+			printf("%s\n", "nvlist_lookup_uint64");
+		#endif
+	}
 	return (nvlist_lookup_common(nvl, name, DATA_TYPE_UINT64, NULL, val));
 }
 
