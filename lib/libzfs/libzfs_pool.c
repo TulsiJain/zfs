@@ -4523,7 +4523,7 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	/* find out if the dataset is mounted */
 	mounted = is_mounted(zhp->zpool_hdl, dsname, &mntpnt);
 
-	printf("mounted %s\n", str(mounted));
+	printf("mounted %d\n", mounted);
 
 	/* get the corrupted object's path */
 	(void) strlcpy(zc.zc_name, dsname, sizeof (zc.zc_name));
