@@ -5310,6 +5310,7 @@ zfs_ioc_inject_list_next(zfs_cmd_t *zc)
 static int
 zfs_ioc_error_log(zfs_cmd_t *zc)
 {
+	printk("%s\n", "Bro I am called can you see me" );
 	spa_t *spa;
 	int error;
 	size_t count = (size_t)zc->zc_nvlist_dst_size;

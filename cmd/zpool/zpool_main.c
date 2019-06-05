@@ -7239,6 +7239,11 @@ static void
 print_error_log(zpool_handle_t *zhp)
 {
 	printf("%s\n", "print_error_log");
+
+
+
+	printf("%s\n", "print_error_log zpool_handle_t printing");
+
 	nvlist_t *nverrlist = NULL;
 	nvpair_t *elem;
 	char *pathname;

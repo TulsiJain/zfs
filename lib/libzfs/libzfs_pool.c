@@ -4112,10 +4112,16 @@ int
 zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 {
 	printf("%s\n", "zpool_get_errlog called");
+	printf("zpool_config_size is %d\n", zhp->zpool_config_size) ;
+	
 	zfs_cmd_t zc = {"\0"};
+	
 	libzfs_handle_t *hdl = zhp->zpool_hdl;
+	
 	uint64_t count;
+	
 	zbookmark_phys_t *zb = NULL;
+	
 	int i;
 
 	/*
@@ -4125,17 +4131,27 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	 */
 	verify(nvlist_lookup_uint64(zhp->zpool_config, ZPOOL_CONFIG_ERRCOUNT,
 	    &count) == 0);
-	if (count == 0)
+	printf(" count is %llu\n", (u_longlong_t)count);
+	
+	if (count == 0){
 		return (0);
+	}
+
+	printf("size of sizeof zbookmark_phys_t is %d\n", sizeof(zbookmark_phys_t));
+
 	zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
 	    count * sizeof (zbookmark_phys_t));
+	
 	zc.zc_nvlist_dst_size = count;
+	
 	(void) strcpy(zc.zc_name, zhp->zpool_name);
 	for (;;) {
 		if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_ERROR_LOG,
 		    &zc) != 0) {
+		    	printf("ioctl returs non zero \n");
 			free((void *)(uintptr_t)zc.zc_nvlist_dst);
 			if (errno == ENOMEM) {
+				printf("ioctl returs non zero ENOMEM \n");
 				void *dst;
 
 				count = zc.zc_nvlist_dst_size;
@@ -4143,6 +4159,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 				    sizeof (zbookmark_phys_t));
 				zc.zc_nvlist_dst = (uintptr_t)dst;
 			} else {
+				printf("ioctl returs non zero NON ENOMEM \n");
 				return (zpool_standard_error_fmt(hdl, errno,
 				    dgettext(TEXT_DOMAIN, "errors: List of "
 				    "errors unavailable")));
