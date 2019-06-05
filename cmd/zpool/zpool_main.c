@@ -7259,12 +7259,12 @@ print_error_log(zpool_handle_t *zhp)
 	while ((elem = nvlist_next_nvpair(nverrlist, elem)) != NULL) {
 		printf("%s\n", "print_error_log while" );
 
-		printf("%d\n", nvp_size);
-		printf("%d\n", nvp_name_sz);
-		printf("%d\n", nvp_reserve);
-		printf("%d\n", nvp_value_elem);
-		printf("%d\n", nvp_type);
-		
+		printf("%d\n", elem->nvp_size);
+		printf("%d\n", elem->nvp_name_sz);
+		printf("%d\n", elem->nvp_reserve);
+		printf("%d\n", elem->nvp_value_elem);
+		printf("%d\n", elem->nvp_type);
+
 		nvlist_t *nv;
 		uint64_t dsobj, obj;
 
