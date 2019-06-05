@@ -4131,7 +4131,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	 */
 	verify(nvlist_lookup_uint64(zhp->zpool_config, ZPOOL_CONFIG_ERRCOUNT,
 	    &count) == 0);
-	printf(" count is %llu\n", (u_longlong_t)count);
+	printf("count is %llu\n", (u_longlong_t)count);
 	
 	if (count == 0){
 		return (0);
@@ -4191,7 +4191,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	count -= zc.zc_nvlist_dst_size;
 
 	printf("can not copy %llu\n", (u_longlong_t)zc.zc_nvlist_dst_size);
-	printf(" count is %llu\n", (u_longlong_t)count);
+	printf("count is %llu\n", (u_longlong_t)count);
 
 	qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
 
@@ -4205,22 +4205,29 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 
 		/* ignoring zb_blkid and zb_level for now */
 		if (i > 0 && zb[i-1].zb_objset == zb[i].zb_objset &&
-		    zb[i-1].zb_object == zb[i].zb_object)
+		    zb[i-1].zb_object == zb[i].zb_object){
+		    	printf("%s\n", "First");
 			continue;
+		}
 
-		if (nvlist_alloc(&nv, NV_UNIQUE_NAME, KM_SLEEP) != 0)
+		if (nvlist_alloc(&nv, NV_UNIQUE_NAME, KM_SLEEP) != 0){
+			printf("%s\n", "Second");
 			goto nomem;
+		}
 		if (nvlist_add_uint64(nv, ZPOOL_ERR_DATASET,
 		    zb[i].zb_objset) != 0) {
+		    	printf("%s\n", "Third");
 			nvlist_free(nv);
 			goto nomem;
 		}
 		if (nvlist_add_uint64(nv, ZPOOL_ERR_OBJECT,
 		    zb[i].zb_object) != 0) {
+		    	printf("%s\n", "Fourth");
 			nvlist_free(nv);
 			goto nomem;
 		}
 		if (nvlist_add_nvlist(*nverrlistp, "ejk", nv) != 0) {
+			printf("%s\n", "Fivth");
 			nvlist_free(nv);
 			goto nomem;
 		}
