@@ -4530,20 +4530,21 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	zc.zc_obj = obj;
 	if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_OBJ_TO_PATH,
 	    &zc) == 0) {
-	    	printf(" entered second if condition");
+	    	printf(" entered second if condition\n");
 		if (mounted) {
-			printf("entered nested loop if condition");
+			printf("entered nested loop if condition\n");
 			(void) snprintf(pathname, len, "%s%s", mntpnt,
 			    zc.zc_value);
 		} else {
-			printf("did not entered nested loop if condition");
+			printf("did not entered nested loop if condition\n");
 			(void) snprintf(pathname, len, "%s:%s",
 			    dsname, zc.zc_value);
 		}
 	} else {
-		printf(" did not entered second if condition");
+		printf(" did not entered second if condition\n");
 		(void) snprintf(pathname, len, "%s:<0x%llx>", dsname,
 		    (longlong_t)obj);
+		printf(" did not entered second if condition\n");
 	}
 	free(mntpnt);
 }
