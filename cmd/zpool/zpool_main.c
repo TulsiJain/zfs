@@ -7264,7 +7264,8 @@ print_error_log(zpool_handle_t *zhp)
 		    &obj) == 0);
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len);
-		(void) printf("%7s %s\n", "", pathname);
+		(void) printf("%10s %s\n", "", pathname);
+		printf("%s",  pathname);
 	}
 	free(pathname);
 	nvlist_free(nverrlist);
