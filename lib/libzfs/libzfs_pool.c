@@ -4148,7 +4148,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	for (;;) {
 		if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_ERROR_LOG,
 		    &zc) != 0) {
-		    	printf("ioctl returs non zero \n");
+		    	printf("ioctl returns non zero \n");
 			free((void *)(uintptr_t)zc.zc_nvlist_dst);
 			if (errno == ENOMEM) {
 				printf("ioctl returs non zero ENOMEM \n");
@@ -4165,6 +4165,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 				    "errors unavailable")));
 			}
 		} else {
+			printf("ioctl returns zero \n");
 			break;
 		}
 	}
