@@ -7250,7 +7250,7 @@ print_error_log(zpool_handle_t *zhp)
 	(void) printf("errors: Permanent errors have been "
 	    "detected in the following files:\n\n");
 
-	printf("len is %lu\n", (u_long_t)*dsobj);
+	printf("len is %lu\n", (u_long_t)len);
 	pathname = safe_malloc(len);
 	elem = NULL;
 	while ((elem = nvlist_next_nvpair(nverrlist, elem)) != NULL) {
