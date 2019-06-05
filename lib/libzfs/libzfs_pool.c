@@ -4112,7 +4112,7 @@ int
 zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 {
 	printf("%s\n", "zpool_get_errlog called");
-	printf("zpool_config_size is %d\n", zhp->zpool_config_size) ;
+	printf("zpool_config_size is %zu\n", zhp->zpool_config_size) ;
 	
 	zfs_cmd_t zc = {"\0"};
 	
