@@ -7250,6 +7250,7 @@ print_error_log(zpool_handle_t *zhp)
 	(void) printf("errors: Permanent errors have been "
 	    "detected in the following files:\n\n");
 
+	printf("len is %lu\n", (u_long_t)*dsobj);
 	pathname = safe_malloc(len);
 	elem = NULL;
 	while ((elem = nvlist_next_nvpair(nverrlist, elem)) != NULL) {
@@ -7262,10 +7263,11 @@ print_error_log(zpool_handle_t *zhp)
 		    &dsobj) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_OBJECT,
 		    &obj) == 0);
+		printf("%llu\n", (u_longlong_t)*dsobj);
+		printf("%llu\n", (u_longlong_t)*obj);
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len);
-		(void) printf("%10s %s\n", "", pathname);
-		printf("%s",  pathname);
+		(void) printf("%7s %s\n", "", pathname);
 	}
 	free(pathname);
 	nvlist_free(nverrlist);
