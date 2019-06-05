@@ -4143,9 +4143,12 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	    count * sizeof (zbookmark_phys_t));
 	
 	zc.zc_nvlist_dst_size = count;
+
+	printf("zc_nvlist_dst_size before kernel %llu\n", (u_longlong_t)zc.zc_nvlist_dst_size);
 	
 	(void) strcpy(zc.zc_name, zhp->zpool_name);
 	for (;;) {
+		printf("infinite for loop executing \n");
 		if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_ERROR_LOG,
 		    &zc) != 0) {
 		    	printf("ioctl returns non zero \n");
@@ -4165,10 +4168,13 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 				    "errors unavailable")));
 			}
 		} else {
-			printf("ioctl returns zero \n");
+			printf("ioctl success\n");
+			printf("let's move forward success\n");
 			break;
 		}
 	}
+
+
 
 	/*
 	 * Sort the resulting bookmarks.  This is a little confusing due to the
@@ -4177,9 +4183,15 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	 * _not_ copied as part of the process.  So we point the start of our
 	 * array appropriate and decrement the total number of elements.
 	 */
+
+	printf("zc_nvlist_dst_size after kernel %llu\n", (u_longlong_t)zc.zc_nvlist_dst_size);
+	
 	zb = ((zbookmark_phys_t *)(uintptr_t)zc.zc_nvlist_dst) +
 	    zc.zc_nvlist_dst_size;
 	count -= zc.zc_nvlist_dst_size;
+
+	printf("can not copy %llu\n", (u_longlong_t)zc.zc_nvlist_dst_size);
+	printf(" count is %llu\n", (u_longlong_t)count);
 
 	qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
 

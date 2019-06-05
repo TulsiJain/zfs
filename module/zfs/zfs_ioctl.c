@@ -5315,18 +5315,22 @@ zfs_ioc_error_log(zfs_cmd_t *zc)
 	int error;
 	size_t count = (size_t)zc->zc_nvlist_dst_size;
 
+
+
 	if ((error = spa_open(zc->zc_name, &spa, FTAG)) != 0)
 		return (error);
 
 	error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
 	    &count);
-	if (error == 0)
+	printk("error count is %d\n", error);
+	if (error == 0){
 		zc->zc_nvlist_dst_size = count;
-	else
+	}
+	else{
 		zc->zc_nvlist_dst_size = spa_get_errlog_size(spa);
-
+		printk("spa get_errlog size is %llu\n", zc->zc_nvlist_dst_size);
+	}
 	spa_close(spa, FTAG);
-
 	return (error);
 }
 
