@@ -4512,6 +4512,7 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	zc.zc_obj = dsobj;
 	if (ioctl(zhp->zpool_hdl->libzfs_fd,
 	    ZFS_IOC_DSOBJ_TO_DSNAME, &zc) != 0) {
+	    	printf(" entered if condition");
 		/* just write out a path of two object numbers */
 		(void) snprintf(pathname, len, "<0x%llx>:<0x%llx>",
 		    (longlong_t)dsobj, (longlong_t)obj);
