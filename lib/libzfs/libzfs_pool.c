@@ -4512,7 +4512,7 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	zc.zc_obj = dsobj;
 	if (ioctl(zhp->zpool_hdl->libzfs_fd,
 	    ZFS_IOC_DSOBJ_TO_DSNAME, &zc) != 0) {
-	    	printf(" entered if condition");
+	    	printf(" entered first if condition");
 		/* just write out a path of two object numbers */
 		(void) snprintf(pathname, len, "<0x%llx>:<0x%llx>",
 		    (longlong_t)dsobj, (longlong_t)obj);
@@ -4523,19 +4523,25 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	/* find out if the dataset is mounted */
 	mounted = is_mounted(zhp->zpool_hdl, dsname, &mntpnt);
 
+	printf("mounted %s\n", str(mounted));
+
 	/* get the corrupted object's path */
 	(void) strlcpy(zc.zc_name, dsname, sizeof (zc.zc_name));
 	zc.zc_obj = obj;
 	if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_OBJ_TO_PATH,
 	    &zc) == 0) {
+	    	printf(" entered second if condition");
 		if (mounted) {
+			printf("entered nested loop if condition");
 			(void) snprintf(pathname, len, "%s%s", mntpnt,
 			    zc.zc_value);
 		} else {
+			printf("did not entered nested loop if condition");
 			(void) snprintf(pathname, len, "%s:%s",
 			    dsname, zc.zc_value);
 		}
 	} else {
+		printf(" did not entered second if condition");
 		(void) snprintf(pathname, len, "%s:<0x%llx>", dsname,
 		    (longlong_t)obj);
 	}
