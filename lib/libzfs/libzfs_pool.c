@@ -4137,7 +4137,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		return (0);
 	}
 
-	printf("size of sizeof zbookmark_phys_t is %d\n", sizeof(zbookmark_phys_t));
+	printf("size of sizeof zbookmark_phys_t is %zu\n", sizeof(zbookmark_phys_t));
 
 	zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
 	    count * sizeof (zbookmark_phys_t));
