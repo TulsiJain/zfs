@@ -7263,8 +7263,8 @@ print_error_log(zpool_handle_t *zhp)
 		    &dsobj) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_OBJECT,
 		    &obj) == 0);
-		printf("%llu\n", (u_longlong_t)*dsobj);
-		printf("%llu\n", (u_longlong_t)*obj);
+		printf("%llu\n", (u_longlong_t)dsobj);
+		printf("%llu\n", (u_longlong_t)obj);
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len);
 		(void) printf("%7s %s\n", "", pathname);
