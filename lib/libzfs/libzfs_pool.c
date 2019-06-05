@@ -4491,6 +4491,7 @@ void
 zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
     char *pathname, size_t len)
 {
+	printf("%s\n", "zpool_obj_to_path" );
 	zfs_cmd_t zc = {"\0"};
 	boolean_t mounted = B_FALSE;
 	char *mntpnt = NULL;
@@ -4504,7 +4505,10 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	}
 
 	/* get the dataset's name */
+	printf(" dataset's name %s\n", zhp->zpool_name );
 	(void) strlcpy(zc.zc_name, zhp->zpool_name, sizeof (zc.zc_name));
+	printf(" dataset's name %s\n", zhp->zpool_name );
+	printf(" dataset's name %s\n", zc.zc_name );
 	zc.zc_obj = dsobj;
 	if (ioctl(zhp->zpool_hdl->libzfs_fd,
 	    ZFS_IOC_DSOBJ_TO_DSNAME, &zc) != 0) {
