@@ -6682,6 +6682,9 @@ scrub_callback(zpool_handle_t *zhp, void *data)
 	scrub_cbdata_t *cb = data;
 	int err;
 
+
+	printf("%s\n", "scrub_callback");
+
 	/*
 	 * Ignore faulted pools.
 	 */
@@ -6692,6 +6695,9 @@ scrub_callback(zpool_handle_t *zhp, void *data)
 	}
 
 	err = zpool_scan(zhp, cb->cb_type, cb->cb_scrub_cmd);
+
+
+	printf("scrub_callback err %d\n", err);
 
 	if (err == 0 && zpool_has_checkpoint(zhp) &&
 	    cb->cb_type == POOL_SCAN_SCRUB) {

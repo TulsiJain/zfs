@@ -2323,6 +2323,7 @@ zpool_trim(zpool_handle_t *zhp, pool_trim_func_t cmd_type, nvlist_t *vds,
 int
 zpool_scan(zpool_handle_t *zhp, pool_scan_func_t func, pool_scrub_cmd_t cmd)
 {
+	printf("%s\n",  "zpool_scan");
 	zfs_cmd_t zc = {"\0"};
 	char msg[1024];
 	int err;
@@ -2332,8 +2333,10 @@ zpool_scan(zpool_handle_t *zhp, pool_scan_func_t func, pool_scrub_cmd_t cmd)
 	zc.zc_cookie = func;
 	zc.zc_flags = cmd;
 
-	if (zfs_ioctl(hdl, ZFS_IOC_POOL_SCAN, &zc) == 0)
+	if (zfs_ioctl(hdl, ZFS_IOC_POOL_SCAN, &zc) == 0){
+		printf("%s\n",  "zpool_scan zfs_ioctl");
 		return (0);
+	}
 
 	err = errno;
 
@@ -4572,9 +4575,9 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 			printf("entered nested loop if condition\n");
 			printf("%s \n", mntpnt);
 			printf("%s \n", zc.zc_value);
-			printf("%s \n", pathname);
 			(void) snprintf(pathname, len, "%s%s", mntpnt,
 			    zc.zc_value);
+			printf("%s \n", pathname);
 		} else {
 			printf("did not entered nested loop if condition\n");
 
