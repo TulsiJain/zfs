@@ -792,7 +792,7 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 
 	if (func == POOL_SCAN_SCRUB && dsl_scan_is_paused_scrub(scn)) {
 
-		#ifdef defined(_KERNEL)
+		#ifdef _KERNEL
 			printk("%s\n", "POOL_SCAN_SCRUB dsl_scan_is_paused_scrub" );
 		#else
 			printf("%s\n", "POOL_SCAN_SCRUB dsl_scan_is_paused_scrub" );
