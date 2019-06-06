@@ -809,6 +809,12 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 		return (SET_ERROR(err));
 	}
 
+	#ifdef _KERNEL
+		printk("%s\n", "Nothing entered" );
+	#else
+		printf("%s\n", "Nothing entered" );
+	#endif
+
 	return (dsl_sync_task(spa_name(spa), dsl_scan_setup_check,
 	    dsl_scan_setup_sync, &func, 0, ZFS_SPACE_CHECK_EXTRA_RESERVED));
 }

@@ -255,7 +255,7 @@ for_each_pool(int argc, char **argv, boolean_t unavail,
 
 	pool_list_free(list);
 
-	printf("%s\n", "for_each_pool completed" );
+	printf("%s\n", "for_each_pool completed");
 
 	return (ret);
 }

@@ -4229,8 +4229,23 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			nvlist_free(nv);
 			goto nomem;
 		}
+
+		if (nvlist_add_int64(nv, ZPOOL_ERR_LEVEL,
+		    zb[i].zb_level) != 0) {
+		    	printf("%s\n", "Fivth");
+			nvlist_free(nv);
+			goto nomem;
+		}
+
+		if (nvlist_add_uint64(nv, ZPOOL_ERR_BLOCKID,
+		    zb[i].zb_blkid) != 0) {
+		    	printf("%s\n", "Sixth");
+			nvlist_free(nv);
+			goto nomem;
+		}
+
 		if (nvlist_add_nvlist(*nverrlistp, "ejk", nv) != 0) {
-			printf("%s\n", "Fivth");
+			printf("%s\n", "Seven");
 			nvlist_free(nv);
 			goto nomem;
 		}

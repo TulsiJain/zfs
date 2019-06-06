@@ -7276,15 +7276,23 @@ print_error_log(zpool_handle_t *zhp)
 		printf("%d\n", elem->nvp_type);
 
 		nvlist_t *nv;
-		uint64_t dsobj, obj;
+		uint64_t dsobj, obj, blockid;
+		int64_t	level;
 
 		verify(nvpair_value_nvlist(elem, &nv) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_DATASET,
 		    &dsobj) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_OBJECT,
 		    &obj) == 0);
+		verify(nvlist_lookup_int64(nv, ZPOOL_ERR_LEVEL,
+		    &level) == 0);
+		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_BLOCKID,
+		    &blockid) == 0);
+		printf("%s\n", "print_error_log while verify" );
 		printf("%llu\n", (u_longlong_t)dsobj);
 		printf("%llu\n", (u_longlong_t)obj);
+		printf("%llx\n", (u_longlong_t)level);
+		printf("%llu\n", (u_longlong_t)blockid);
 		printf("%s\n", pathname);
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len);
