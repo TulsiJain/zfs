@@ -4542,10 +4542,9 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	}
 
 	/* get the dataset's name */
-	printf(" dataset's name %s\n", zhp->zpool_name );
+	printf("zhp->zpool_name is  %s\n", zhp->zpool_name );
 	(void) strlcpy(zc.zc_name, zhp->zpool_name, sizeof (zc.zc_name));
-	printf(" dataset's name %s\n", zhp->zpool_name );
-	printf(" dataset's name %s\n", zc.zc_name );
+	printf("zc.zc_name is %s\n", zc.zc_name );
 	zc.zc_obj = dsobj;
 	if (ioctl(zhp->zpool_hdl->libzfs_fd,
 	    ZFS_IOC_DSOBJ_TO_DSNAME, &zc) != 0) {
@@ -4556,6 +4555,7 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 		return;
 	}
 	(void) strlcpy(dsname, zc.zc_value, sizeof (dsname));
+	printf("zc.zc_value is %s\n", zc.zc_value );
 
 	/* find out if the dataset is mounted */
 	mounted = is_mounted(zhp->zpool_hdl, dsname, &mntpnt);
@@ -4567,7 +4567,7 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	zc.zc_obj = obj;
 	if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_OBJ_TO_PATH,
 	    &zc) == 0) {
-	    	printf(" entered second if condition\n");
+	    	printf("entered second if condition\n");
 		if (mounted) {
 			printf("entered nested loop if condition\n");
 			(void) snprintf(pathname, len, "%s%s", mntpnt,
@@ -4578,10 +4578,9 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 			    dsname, zc.zc_value);
 		}
 	} else {
-		printf(" did not entered second if condition\n");
+		printf("did not entered second if condition\n");
 		(void) snprintf(pathname, len, "%s:<0x%llx>", dsname,
 		    (longlong_t)obj);
-		printf(" did not entered second if condition\n");
 	}
 	free(mntpnt);
 }

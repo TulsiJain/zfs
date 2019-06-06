@@ -1860,6 +1860,8 @@ zfs_ioc_obj_to_path(zfs_cmd_t *zc)
 	objset_t *os;
 	int error;
 
+	printk("%s\n", "zfs_ioc_obj_to_path");
+
 	/* XXX reading from objset not owned */
 	if ((error = dmu_objset_hold_flags(zc->zc_name, B_TRUE,
 	    FTAG, &os)) != 0)

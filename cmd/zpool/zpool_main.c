@@ -7275,6 +7275,7 @@ print_error_log(zpool_handle_t *zhp)
 		    &obj) == 0);
 		printf("%llu\n", (u_longlong_t)dsobj);
 		printf("%llu\n", (u_longlong_t)obj);
+		printf("%s\n", pathname);
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len);
 		(void) printf("%7s %s\n", "", pathname);
