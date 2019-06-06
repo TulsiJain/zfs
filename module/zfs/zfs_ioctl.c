@@ -1741,18 +1741,29 @@ zfs_ioc_pool_scan(zfs_cmd_t *zc)
 	spa_t *spa;
 	int error;
 
-	if (zc->zc_flags >= POOL_SCRUB_FLAGS_END)
+	if (zc->zc_flags >= POOL_SCRUB_FLAGS_END){
+		printk("%s\n" "entered POOL_SCRUB_FLAGS_END else");
 		return (SET_ERROR(EINVAL));
+	}
 
-	if ((error = spa_open(zc->zc_name, &spa, FTAG)) != 0)
+	if ((error = spa_open(zc->zc_name, &spa, FTAG)) != 0){
+		printk("%s\n" "entered spa_open else");
 		return (error);
+	}
 
-	if (zc->zc_flags == POOL_SCRUB_PAUSE)
+	if (zc->zc_flags == POOL_SCRUB_PAUSE){
+		printk("%s\n" "entered POOL_SCRUB_PAUSE else");
 		error = spa_scrub_pause_resume(spa, POOL_SCRUB_PAUSE);
-	else if (zc->zc_cookie == POOL_SCAN_NONE)
+	}
+	else if (zc->zc_cookie == POOL_SCAN_NONE){
+		printk("%s\n" "entered POOL_SCAN_NONE else");
 		error = spa_scan_stop(spa);
-	else
+	}
+	else{
+		printk("%s\n" "This is expected dude");
+		printk("%s\n" "entered zfs_ioc_pool_scan else");
 		error = spa_scan(spa, zc->zc_cookie);
+	}
 
 	spa_close(spa, FTAG);
 

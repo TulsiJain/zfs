@@ -791,6 +791,7 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 	}
 
 	if (func == POOL_SCAN_SCRUB && dsl_scan_is_paused_scrub(scn)) {
+		printk("%s\n", "POOL_SCAN_SCRUB dsl_scan_is_paused_scrub" );
 		/* got scrub start cmd, resume paused scrub */
 		int err = dsl_scrub_set_pause_resume(scn->scn_dp,
 		    POOL_SCRUB_NORMAL);

@@ -7280,13 +7280,19 @@ spa_scan(spa_t *spa, pool_scan_func_t func)
 {
 	ASSERT(spa_config_held(spa, SCL_ALL, RW_WRITER) == 0);
 
-	if (func >= POOL_SCAN_FUNCS || func == POOL_SCAN_NONE)
+	printk("%s\n", "spa_scan entered" );
+
+	if (func >= POOL_SCAN_FUNCS || func == POOL_SCAN_NONE){
+		printk("%s\n", "No POOL_SCAN_FUNCS" );
 		return (SET_ERROR(ENOTSUP));
+	}
 
 	if (func == POOL_SCAN_RESILVER &&
-	    !spa_feature_is_enabled(spa, SPA_FEATURE_RESILVER_DEFER))
+	    !spa_feature_is_enabled(spa, SPA_FEATURE_RESILVER_DEFER)){
+		printk("%s\n", "No POOL_SCAN_FUNCS" );
 		return (SET_ERROR(ENOTSUP));
-
+	}
+		
 	/*
 	 * If a resilver was requested, but there is no DTL on a
 	 * writeable leaf device, we have nothing to do.
@@ -7294,6 +7300,7 @@ spa_scan(spa_t *spa, pool_scan_func_t func)
 	if (func == POOL_SCAN_RESILVER &&
 	    !vdev_resilver_needed(spa->spa_root_vdev, NULL, NULL)) {
 		spa_async_request(spa, SPA_ASYNC_RESILVER_DONE);
+		printk("%s\n", "No POOL_SCAN_RESILVER" );
 		return (0);
 	}
 

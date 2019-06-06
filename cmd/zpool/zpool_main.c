@@ -6752,6 +6752,10 @@ zpool_do_scrub(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
+	if (cb.cb_type == POOL_SCAN_SCRUB){
+		printf("%s\n", "POOL_SCAN_SCRUB");
+	}
+
 	if (argc < 1) {
 		(void) fprintf(stderr, gettext("missing pool name argument\n"));
 		usage(B_FALSE);
