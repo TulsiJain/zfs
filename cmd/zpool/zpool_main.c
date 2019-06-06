@@ -7289,11 +7289,11 @@ print_error_log(zpool_handle_t *zhp)
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_BLOCKID,
 		    &blockid) == 0);
 		printf("%s\n", "print_error_log while verify" );
-		printf("%llu\n", (u_longlong_t)dsobj);
-		printf("%llu\n", (u_longlong_t)obj);
-		printf("%llx\n", (u_longlong_t)level);
-		printf("%llu\n", (u_longlong_t)blockid);
-		printf("%s\n", pathname);
+		printf("dsobj is %llu\n", (u_longlong_t)dsobj);
+		printf("obj is %llu\n", (u_longlong_t)obj);
+		printf("level is %llx\n", (u_longlong_t)level);
+		printf("blockid is %llu\n", (u_longlong_t)blockid);
+		printf("pathname is %s\n", pathname);
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len);
 		(void) printf("%7s %s\n", "", pathname);
