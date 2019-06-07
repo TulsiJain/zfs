@@ -2092,8 +2092,8 @@ zfs_obj_to_stats_impl(sa_handle_t *hdl, sa_attr_type_t *sa_table,
 	SA_ADD_BULK_ATTR(bulk, count, sa_table[ZPL_CTIME], NULL,
 	    &sb->zs_ctime, sizeof (sb->zs_ctime));
 
-	sb->block_size, sizeof (sb->zs_ctime));
-	sb->indirect_block_size, sizeof (sb->zs_ctime));
+	sb->block_size = doi->doi_data_block_size;
+	sb->indirect_block_size = doi->doi_metadata_block_size;
 
 	// SA_ADD_BULK_ATTR(bulk, count, doi->doi_data_block_size, NULL,
 	//     &sb->block_size, sizeof (sb->block_size));
