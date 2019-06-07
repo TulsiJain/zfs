@@ -4607,6 +4607,14 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 		    (longlong_t)obj);
 	}
 	free(mntpnt);
+
+	// zfs_cmd_t zc = {"\0"};
+	int error;
+	errno = 0;
+	error = ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_OBJ_TO_STATS, &zc);
+	printf("ZFS_IOC_OBJ_TO_STATS error is %d\n", error);
+	// (void) strlcpy(zc.zc_name, dsname, sizeof (zc.zc_name));
+	// zc.zc_obj = obj;
 }
 
 /*
