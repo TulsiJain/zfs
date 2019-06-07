@@ -2075,8 +2075,6 @@ zfs_obj_to_stats_impl(sa_handle_t *hdl, sa_attr_type_t *sa_table,
 	dmu_object_info_t doi;
 	sa_object_info(hdl, &doi);
 
-	
-
 	#if _KERNEL
 		printk("doi_data_block_size %u\n",  doi.doi_data_block_size);
 		printk("doi_metadata_block_size %u\n",  doi.doi_metadata_block_size);
@@ -2222,6 +2220,8 @@ int
 zfs_obj_to_stats(objset_t *osp, uint64_t obj, zfs_stat_t *sb,
     char *buf, int len)
 {
+
+	
 	char *path = buf + len - 1;
 	sa_attr_type_t *sa_table;
 	sa_handle_t *hdl;
