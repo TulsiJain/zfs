@@ -178,6 +178,8 @@ process_error_log(spa_t *spa, uint64_t obj, void *addr, size_t *count)
 			return (SET_ERROR(ENOMEM));
 		}
 
+		printk("za.za_name %s\n",  za.za_name);
+
 		name_to_bookmark(za.za_name, &zb);
 
 		if (copyout(&zb, (char *)addr +
