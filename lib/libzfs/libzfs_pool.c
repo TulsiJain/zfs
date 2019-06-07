@@ -4612,7 +4612,14 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	int error;
 	errno = 0;
 	error = ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_OBJ_TO_STATS, &zc);
+	
 	printf("ZFS_IOC_OBJ_TO_STATS error is %d\n", error);
+
+	printf("%u\n", zs_gen );
+	printf("%u\n", zs_mode);
+	printf("%u\n", zs_links);
+	printf("%u\n", block_size);
+	printf("%u\n", indirect_block_size);
 	// (void) strlcpy(zc.zc_name, dsname, sizeof (zc.zc_name));
 	// zc.zc_obj = obj;
 }
