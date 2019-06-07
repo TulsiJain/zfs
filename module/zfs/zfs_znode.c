@@ -2078,8 +2078,8 @@ zfs_obj_to_stats_impl(sa_handle_t *hdl, sa_attr_type_t *sa_table,
 	
 
 	#if _KERNEL
-		printk("doi_data_block_size %u\n",  doi->doi_data_block_size);
-		printk("doi_metadata_block_size %u\n",  doi->doi_metadata_block_size);
+		printk("doi_data_block_size %u\n",  doi.doi_data_block_size);
+		printk("doi_metadata_block_size %u\n",  doi.doi_metadata_block_size);
 	#else
 	#endif
 
@@ -2101,8 +2101,8 @@ zfs_obj_to_stats_impl(sa_handle_t *hdl, sa_attr_type_t *sa_table,
 	//     &sb->indirect_block_size, sizeof (sb->indirect_block_size));
 
 	#if _KERNEL
-		printk("doi_data_block_size %u\n",  sb->block_size);
-		printk("doi_metadata_block_size %u\n",  sb->indirect_block_size);
+		printk("doi_data_block_size %llu\n",  sb->block_size);
+		printk("doi_metadata_block_size %llu\n",  sb->indirect_block_size);
 	#else
 	#endif
 
