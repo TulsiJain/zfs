@@ -2069,8 +2069,20 @@ static int
 zfs_obj_to_stats_impl(sa_handle_t *hdl, sa_attr_type_t *sa_table,
     zfs_stat_t *sb)
 {
-	sa_bulk_attr_t bulk[4];
+	sa_bulk_attr_t bulk[6];
 	int count = 0;
+
+	dmu_object_info_t doi;
+	sa_object_info(hdl, &doi);
+
+	// sb->block_size, sizeof (sb->zs_ctime));
+	// sb->indirect_block_size, sizeof (sb->zs_ctime));
+
+	#if _KERNEL
+		printk("doi_data_block_size %u\n",  doi->doi_data_block_size);
+		printk("doi_metadata_block_size %u\n",  doi->doi_metadata_block_size);
+	#else
+	#endif
 
 	SA_ADD_BULK_ATTR(bulk, count, sa_table[ZPL_MODE], NULL,
 	    &sb->zs_mode, sizeof (sb->zs_mode));
@@ -2081,8 +2093,15 @@ zfs_obj_to_stats_impl(sa_handle_t *hdl, sa_attr_type_t *sa_table,
 	SA_ADD_BULK_ATTR(bulk, count, sa_table[ZPL_CTIME], NULL,
 	    &sb->zs_ctime, sizeof (sb->zs_ctime));
 
+	SA_ADD_BULK_ATTR(bulk, count, doi->doi_data_block_size, NULL,
+	    &sb->block_size, sizeof (sb->block_size));
+	SA_ADD_BULK_ATTR(bulk, count, doi->doi_metadata_block_size, NULL,
+	    &sb->indirect_block_size, sizeof (sb->indirect_block_size));
+
 	return (sa_bulk_lookup(hdl, bulk, count));
 }
+
+
 
 static int
 zfs_obj_to_path_impl(objset_t *osp, uint64_t obj, sa_handle_t *hdl,
@@ -2108,6 +2127,8 @@ zfs_obj_to_path_impl(objset_t *osp, uint64_t obj, sa_handle_t *hdl,
 		return (error);
 	}
 	error = 0;
+
+
 
 	for (;;) {
 		uint64_t pobj = 0;
