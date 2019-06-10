@@ -7269,11 +7269,11 @@ print_error_log(zpool_handle_t *zhp)
 	while ((elem = nvlist_next_nvpair(nverrlist, elem)) != NULL) {
 		printf("%s\n", "print_error_log while" );
 
-		printf("%d\n", elem->nvp_size);
-		printf("%d\n", elem->nvp_name_sz);
-		printf("%d\n", elem->nvp_reserve);
-		printf("%d\n", elem->nvp_value_elem);
-		printf("%d\n", elem->nvp_type);
+		// printf("%d\n", elem->nvp_size);
+		// printf("%d\n", elem->nvp_name_sz);
+		// printf("%d\n", elem->nvp_reserve);
+		// printf("%d\n", elem->nvp_value_elem);
+		// printf("%d\n", elem->nvp_type);
 
 		nvlist_t *nv;
 		uint64_t dsobj, obj, blockid, block_size, indirect_block_size;
@@ -7289,11 +7289,12 @@ print_error_log(zpool_handle_t *zhp)
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_BLOCKID,
 		    &blockid) == 0);
 		printf("%s\n", "print_error_log while verify" );
+		
 		printf("dsobj is %llu\n", (u_longlong_t)dsobj);
 		printf("obj is %llu\n", (u_longlong_t)obj);
 		printf("level is %llx\n", (u_longlong_t)level);
 		printf("blockid is %llu\n", (u_longlong_t)blockid);
-		printf("pathname is %s\n", pathname);
+		
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len, &block_size,
 		    &indirect_block_size);
