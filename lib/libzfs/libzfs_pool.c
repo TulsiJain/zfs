@@ -4220,21 +4220,18 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			if (i == count - 1){
 				printf("%s\n", "added");
 				if (nvlist_add_uint64(nv, ZPOOL_ERR_LEVEL,
-				    count_level) != 0) {
-				    	printf("%s\n", "Fivth");
+				    count_block) != 0) {
 					nvlist_free(nv);
 					goto nomem;
 				}
 
 				if (nvlist_add_uint64(nv, ZPOOL_ERR_BLOCKID,
 				    count_block) != 0) {
-				    	printf("%s\n", "Fivth");
 					nvlist_free(nv);
 					goto nomem;
 				}
 
 				if (nvlist_add_nvlist(*nverrlistp, "ejk", nv) != 0) {
-					printf("%s\n", "Seven");
 					nvlist_free(nv);
 					goto nomem;
 				}
@@ -4246,19 +4243,16 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		}
 
 		if (nvlist_alloc(&nv, NV_UNIQUE_NAME, KM_SLEEP) != 0){
-			printf("%s\n", "Second");
 			goto nomem;
 		}
 		
 		if (nvlist_add_uint64(nv, ZPOOL_ERR_DATASET,
 		    zb[i].zb_objset) != 0) {
-		    	printf("%s\n", "Third");
 			nvlist_free(nv);
 			goto nomem;
 		}
 		if (nvlist_add_uint64(nv, ZPOOL_ERR_OBJECT,
 		    zb[i].zb_object) != 0) {
-		    	printf("%s\n", "Fourth");
 			nvlist_free(nv);
 			goto nomem;
 		}
@@ -4267,20 +4261,17 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		if ( i > 0){
 			if (nvlist_add_uint64(nv, ZPOOL_ERR_LEVEL,
 			    count_level) != 0) {
-			    	printf("%s\n", "Fivth");
 				nvlist_free(nv);
 				goto nomem;
 			}
 
 			if (nvlist_add_uint64(nv, ZPOOL_ERR_BLOCKID,
 			    count_block) != 0) {
-			    	printf("%s\n", "Fivth");
 				nvlist_free(nv);
 				goto nomem;
 			}
 
 			if (nvlist_add_nvlist(*nverrlistp, "ejk", nv) != 0) {
-				printf("%s\n", "Seven");
 				nvlist_free(nv);
 				goto nomem;
 			}
@@ -4288,20 +4279,6 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			count_block = 0;
 			count_level = 0;
 		}
-
-		// if (nvlist_add_int64(nv, ZPOOL_ERR_LEVEL,
-		//     zb[i].zb_level) != 0) {
-		//     	printf("%s\n", "Fivth");
-		// 	nvlist_free(nv);
-		// 	goto nomem;
-		// }
-
-		// if (nvlist_add_uint64(nv, ZPOOL_ERR_BLOCKID,
-		//     zb[i].zb_blkid) != 0) {
-		//     	printf("%s\n", "Sixth");
-		// 	nvlist_free(nv);
-		// 	goto nomem;
-		// }
 	}
 
 	free((void *)(uintptr_t)zc.zc_nvlist_dst);
