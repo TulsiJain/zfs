@@ -4254,8 +4254,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			nvlist_free(nv);
 			goto nomem;
 		}
-		count_level = 1;
-		count_block = 1;
+		same_object_block = 1;
 		if ( i > 0){
 			if (nvlist_add_uint64(nv, ZPOOL_ERR_LEVEL,
 			    same_object_block) != 0) {
