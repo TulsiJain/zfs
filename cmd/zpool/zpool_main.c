@@ -7276,7 +7276,7 @@ print_error_log(zpool_handle_t *zhp)
 		printf("%d\n", elem->nvp_type);
 
 		nvlist_t *nv;
-		uint64_t dsobj, obj, blockid;
+		uint64_t dsobj, obj, blockid, block_size, indirect_block_size;
 		int64_t	level;
 
 		verify(nvpair_value_nvlist(elem, &nv) == 0);
@@ -7295,7 +7295,11 @@ print_error_log(zpool_handle_t *zhp)
 		printf("blockid is %llu\n", (u_longlong_t)blockid);
 		printf("pathname is %s\n", pathname);
 		printf("%s\n", "print_error_log while verify" );
-		zpool_obj_to_path(zhp, dsobj, obj, pathname, len);
+		zpool_obj_to_path(zhp, dsobj, obj, pathname, len, &block_size,
+		    &indirect_block_size);
+		printf("block_size is %lu\n", block_size);
+		printf("indirect_block_size is %lu\n", 
+			indirect_block_size);
 		(void) printf("%7s %s\n", "", pathname);
 	}
 	free(pathname);

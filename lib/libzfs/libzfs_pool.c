@@ -4546,7 +4546,8 @@ zpool_events_seek(libzfs_handle_t *hdl, uint64_t eid, int zevent_fd)
 
 void
 zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
-    char *pathname, size_t len)
+    char *pathname, size_t len, uint64_t *block_size,
+        uint64_t *indirect_block_size)
 {
 	printf("%s\n", "zpool_obj_to_path" );
 	zfs_cmd_t zc = {"\0"};
@@ -4608,16 +4609,16 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 	}
 	free(mntpnt);
 
-	// zfs_cmd_t zc = {"\0"};
 	int error;
-	errno = 0;
 	error = ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_OBJ_TO_STATS, &zc);
-	
-	printf("ZFS_IOC_OBJ_TO_STATS error is %d\n", error);
-	printf("%lu\n", zc.zc_stat.block_size);
-	printf("%lu\n", zc.zc_stat.indirect_block_size);
-	// (void) strlcpy(zc.zc_name, dsname, sizeof (zc.zc_name));
-	// zc.zc_obj = obj;
+	(void) memcpy(sb, &zc.zc_stat, sizeof (zfs_stat_t));
+	if (error == 0) {
+		*block_size = zc.zc_stat.block_size;
+		*indirect_block_size = zc.zc_stat.indirect_block_size;
+		printf("ZFS_IOC_OBJ_TO_STATS error is %d\n", error);
+		printf("%lu\n", zc.zc_stat.block_size);
+		printf("%lu\n", zc.zc_stat.indirect_block_size);
+	}
 }
 
 /*
