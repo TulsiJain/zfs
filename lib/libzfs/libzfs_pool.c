@@ -4205,7 +4205,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	 */
 
 	nvlist_t *nv;
-	int count_block, 
+	int count_block; 
 	int count_level;
 	for (i = 0; i < count; i++) {
 
