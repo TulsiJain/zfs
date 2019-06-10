@@ -7271,16 +7271,19 @@ print_error_log(zpool_handle_t *zhp)
 
 		nvlist_t *nv;
 		uint64_t dsobj, obj, blockid, block_size, indirect_block_size, level;
+		unsigned int same_object_count;
+		uint64_t *hole_array,
+
 
 		verify(nvpair_value_nvlist(elem, &nv) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_DATASET,
 		    &dsobj) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_OBJECT,
 		    &obj) == 0);
-		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_LEVEL,
-		    &level) == 0);
-		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_BLOCKID,
-		    &blockid) == 0);
+		// verify(nvlist_lookup_uint64_array(nv, ZPOOL_ERR_LEVEL,
+		//     hole_array, &same_object_count) == 0);
+		verify(nvlist_lookup_uint64_array(nv, ZPOOL_ERR_BLOCKID,
+		    &hole_array, &same_object_count) == 0);
 		
 		printf("%s\n", "print_error_log while verify" );
 		
