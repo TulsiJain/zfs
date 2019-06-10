@@ -4211,8 +4211,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		/* ignoring zb_blkid and zb_level for now */
 		if (i > 0 && zb[i-1].zb_objset == zb[i].zb_objset &&
 		    zb[i-1].zb_object == zb[i].zb_object){
-			count_block++;
-			count_level++;
+			same_object_block++;
 		    	// printf("%s\n", "First");
 		    	// printf("level is %llx\n", (u_longlong_t)zb[i].zb_level);
 			// printf("blockid is %llu\n", (u_longlong_t)zb[i].zb_blkid);
