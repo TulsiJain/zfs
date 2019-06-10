@@ -4232,6 +4232,13 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 					nvlist_free(nv);
 					goto nomem;
 				}
+
+				if (nvlist_add_nvlist(*nverrlistp, "ejk", nv) != 0) {
+					printf("%s\n", "Seven");
+					nvlist_free(nv);
+					goto nomem;
+				}
+				nvlist_free(nv);
 				count_block = 0;
 				count_level = 0;
 			}
@@ -4255,10 +4262,8 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			nvlist_free(nv);
 			goto nomem;
 		}
-
 		count_block = 1;
 		count_level = 1;
-
 		if ( i > 0){
 			if (nvlist_add_uint64(nv, ZPOOL_ERR_LEVEL,
 			    count_level) != 0) {
@@ -4273,6 +4278,13 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 				nvlist_free(nv);
 				goto nomem;
 			}
+
+			if (nvlist_add_nvlist(*nverrlistp, "ejk", nv) != 0) {
+				printf("%s\n", "Seven");
+				nvlist_free(nv);
+				goto nomem;
+			}
+			nvlist_free(nv);
 			count_block = 0;
 			count_level = 0;
 		}
@@ -4291,12 +4303,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		// 	goto nomem;
 		// }
 
-		if (nvlist_add_nvlist(*nverrlistp, "ejk", nv) != 0) {
-			printf("%s\n", "Seven");
-			nvlist_free(nv);
-			goto nomem;
-		}
-		nvlist_free(nv);
+		
 	}
 
 	free((void *)(uintptr_t)zc.zc_nvlist_dst);
