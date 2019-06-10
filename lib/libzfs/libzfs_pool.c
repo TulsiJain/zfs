@@ -4203,15 +4203,37 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	/*
 	 * Fill in the nverrlistp with nvlist's of dataset and object numbers.
 	 */
+
+	nvlist_t *nv;
+	int count_block, count_level;
 	for (i = 0; i < count; i++) {
-		nvlist_t *nv;
 
 		/* ignoring zb_blkid and zb_level for now */
 		if (i > 0 && zb[i-1].zb_objset == zb[i].zb_objset &&
 		    zb[i-1].zb_object == zb[i].zb_object){
+			count_block++;
+			count_level++;
+			// fnvlist_add_uint32_array(nvl, key, val, 2);
 		    	printf("%s\n", "First");
 		    	printf("level is %llx\n", (u_longlong_t)zb[i].zb_level);
 			printf("blockid is %llu\n", (u_longlong_t)zb[i].zb_blkid);
+			if (i == count - 1){
+				if (nvlist_add_uint64(nv, ZPOOL_ERR_LEVEL,
+				    count_level) != 0) {
+				    	printf("%s\n", "Fivth");
+					nvlist_free(nv);
+					goto nomem;
+				}
+
+				if (nvlist_add_uint64(nv, ZPOOL_ERR_BLOCKID,
+				    count_block) != 0) {
+				    	printf("%s\n", "Fivth");
+					nvlist_free(nv);
+					goto nomem;
+				}
+				count_block = 0;
+				count_level = 0;
+			}
 			continue;
 		}
 
@@ -4219,6 +4241,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			printf("%s\n", "Second");
 			goto nomem;
 		}
+		
 		if (nvlist_add_uint64(nv, ZPOOL_ERR_DATASET,
 		    zb[i].zb_objset) != 0) {
 		    	printf("%s\n", "Third");
@@ -4232,19 +4255,37 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			goto nomem;
 		}
 
-		if (nvlist_add_int64(nv, ZPOOL_ERR_LEVEL,
-		    zb[i].zb_level) != 0) {
-		    	printf("%s\n", "Fivth");
-			nvlist_free(nv);
-			goto nomem;
+		if ( i > 0){
+			if (nvlist_add_uint64(nv, ZPOOL_ERR_LEVEL,
+			    count_level) != 0) {
+			    	printf("%s\n", "Fivth");
+				nvlist_free(nv);
+				goto nomem;
+			}
+
+			if (nvlist_add_uint64(nv, ZPOOL_ERR_BLOCKID,
+			    count_block) != 0) {
+			    	printf("%s\n", "Fivth");
+				nvlist_free(nv);
+				goto nomem;
+			}
+			count_block = 1;
+			count_level = 1;
 		}
 
-		if (nvlist_add_uint64(nv, ZPOOL_ERR_BLOCKID,
-		    zb[i].zb_blkid) != 0) {
-		    	printf("%s\n", "Sixth");
-			nvlist_free(nv);
-			goto nomem;
-		}
+		// if (nvlist_add_int64(nv, ZPOOL_ERR_LEVEL,
+		//     zb[i].zb_level) != 0) {
+		//     	printf("%s\n", "Fivth");
+		// 	nvlist_free(nv);
+		// 	goto nomem;
+		// }
+
+		// if (nvlist_add_uint64(nv, ZPOOL_ERR_BLOCKID,
+		//     zb[i].zb_blkid) != 0) {
+		//     	printf("%s\n", "Sixth");
+		// 	nvlist_free(nv);
+		// 	goto nomem;
+		// }
 
 		if (nvlist_add_nvlist(*nverrlistp, "ejk", nv) != 0) {
 			printf("%s\n", "Seven");
@@ -4543,6 +4584,16 @@ zpool_events_seek(libzfs_handle_t *hdl, uint64_t eid, int zevent_fd)
 
 	return (error);
 }
+
+
+void
+zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
+    char *pathname, size_t len, uint64_t *block_size,
+        uint64_t *indirect_block_size)
+{
+
+
+}	
 
 void
 zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
