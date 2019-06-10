@@ -7281,11 +7281,12 @@ print_error_log(zpool_handle_t *zhp)
 		    &level) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_BLOCKID,
 		    &blockid) == 0);
+		
 		printf("%s\n", "print_error_log while verify" );
 		
 		printf("dsobj is %llu\n", (u_longlong_t)dsobj);
 		printf("obj is %llu\n", (u_longlong_t)obj);
-		printf("level is %llx\n", (u_longlong_t)level);
+		printf("level is %llu\n", (u_longlong_t)level);
 		printf("blockid is %llu\n", (u_longlong_t)blockid);
 		
 		printf("%s\n", "print_error_log while verify" );
