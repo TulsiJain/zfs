@@ -4591,15 +4591,6 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
     char *pathname, size_t len, uint64_t *block_size,
         uint64_t *indirect_block_size)
 {
-
-
-}	
-
-void
-zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
-    char *pathname, size_t len, uint64_t *block_size,
-        uint64_t *indirect_block_size)
-{
 	printf("%s\n", "zpool_obj_to_path" );
 	zfs_cmd_t zc = {"\0"};
 	boolean_t mounted = B_FALSE;
