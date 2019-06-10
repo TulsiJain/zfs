@@ -4218,7 +4218,8 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		    	// printf("level is %llx\n", (u_longlong_t)zb[i].zb_level);
 			// printf("blockid is %llu\n", (u_longlong_t)zb[i].zb_blkid);
 			if (i == count - 1){
-				if (nvlist_add_int64(nv, ZPOOL_ERR_LEVEL,
+				printf("%s\n", "added");
+				if (nvlist_add_uint64(nv, ZPOOL_ERR_LEVEL,
 				    count_level) != 0) {
 				    	printf("%s\n", "Fivth");
 					nvlist_free(nv);
@@ -4238,8 +4239,8 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 					goto nomem;
 				}
 				nvlist_free(nv);
-				count_block = 0;
 				count_level = 0;
+				count_block = 0;
 			}
 			continue;
 		}
@@ -4261,10 +4262,10 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			nvlist_free(nv);
 			goto nomem;
 		}
-		count_block = 1;
 		count_level = 1;
+		count_block = 1;
 		if ( i > 0){
-			if (nvlist_add_int64(nv, ZPOOL_ERR_LEVEL,
+			if (nvlist_add_uint64(nv, ZPOOL_ERR_LEVEL,
 			    count_level) != 0) {
 			    	printf("%s\n", "Fivth");
 				nvlist_free(nv);

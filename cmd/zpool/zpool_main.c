@@ -7284,7 +7284,7 @@ print_error_log(zpool_handle_t *zhp)
 		    &dsobj) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_OBJECT,
 		    &obj) == 0);
-		verify(nvlist_lookup_int64(nv, ZPOOL_ERR_LEVEL,
+		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_LEVEL,
 		    &level) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_BLOCKID,
 		    &blockid) == 0);
