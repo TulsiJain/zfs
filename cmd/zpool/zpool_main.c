@@ -7272,7 +7272,7 @@ print_error_log(zpool_handle_t *zhp)
 		nvlist_t *nv;
 		uint64_t dsobj, obj, blockid, block_size, indirect_block_size, level;
 		unsigned int same_object_count;
-		uint64_t *hole_array,
+		uint64_t *hole_array;
 
 
 		verify(nvpair_value_nvlist(elem, &nv) == 0);
