@@ -4611,7 +4611,6 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 
 	int error;
 	error = ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_OBJ_TO_STATS, &zc);
-	(void) memcpy(sb, &zc.zc_stat, sizeof (zfs_stat_t));
 	if (error == 0) {
 		*block_size = zc.zc_stat.block_size;
 		*indirect_block_size = zc.zc_stat.indirect_block_size;
