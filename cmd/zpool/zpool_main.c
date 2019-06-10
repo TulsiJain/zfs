@@ -7276,8 +7276,7 @@ print_error_log(zpool_handle_t *zhp)
 		// printf("%d\n", elem->nvp_type);
 
 		nvlist_t *nv;
-		uint64_t dsobj, obj, blockid, block_size, indirect_block_size;
-		int64_t	level;
+		uint64_t dsobj, obj, blockid, block_size, indirect_block_size, level;
 
 		verify(nvpair_value_nvlist(elem, &nv) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_DATASET,
