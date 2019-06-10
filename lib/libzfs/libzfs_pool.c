@@ -4206,7 +4206,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 
 	nvlist_t *nv;
 	uint64_t *block_ids;
-	int same_object_block = 0; 
+	int same_object_block = 0;
 	for (i = 0; i < count; i++) {
 
 		/* ignoring zb_blkid and zb_level for now */
@@ -4244,7 +4244,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		if (nvlist_alloc(&nv, NV_UNIQUE_NAME, KM_SLEEP) != 0){
 			goto nomem;
 		}
-		
+		block_ids = kmem_alloc(count * sizeof (uint64_t), KM_SLEEP);
 		if (nvlist_add_uint64(nv, ZPOOL_ERR_DATASET,
 		    zb[i].zb_objset) != 0) {
 			nvlist_free(nv);
@@ -4255,9 +4255,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			nvlist_free(nv);
 			goto nomem;
 		}
-		block_ids[same_object_block] = zb[i].zb_blkid;
 		same_object_block = 1;
-		block_ids = kmem_alloc(count * sizeof (uint64_t), KM_SLEEP);
 		if ( i > 0){
 			if (nvlist_add_uint64_array(nv, ZPOOL_ERR_LEVEL,
 			    block_ids, same_object_block) != 0) {
@@ -4277,6 +4275,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			}
 			nvlist_free(nv);
 			same_object_block = 0;
+			block_ids = kmem_alloc(count * sizeof (uint64_t), KM_SLEEP);
 		}
 	}
 
