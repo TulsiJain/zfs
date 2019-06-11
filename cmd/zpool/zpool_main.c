@@ -7288,18 +7288,24 @@ print_error_log(zpool_handle_t *zhp)
 		verify(nvlist_lookup_uint64_array(nv, ZPOOL_ERR_BLOCKID,
 		    &block_ids, &same_object_count) == 0);
 		
-		printf("Total error in this file is %u\n", same_object_count);
-
-		for (int hm = 0; hm < same_object_count ; hm++){
-			
-		}
-		
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len, &block_size,
 		    &indirect_block_size);
+
+		printf("Total error in this file is %u\n", same_object_count);
 		printf("block_size is %lu\n", block_size);
 		printf("indirect_block_size is %lu\n", 
 			indirect_block_size);
-		(void) printf("%7s %s\n", "", pathname);
+
+		uint64_t offset_minimum;
+		for (int hm = 0; hm < same_object_count ; hm++){
+			uint64_t offset = block_ids[hm]*block_size;
+			if (offset_minimum > offset) {
+				offset_minimum = offset;
+			}
+		}
+		
+		(void) printf("%7s %s at offset %lu bytes \n ", "", pathname,
+		    offset_minimum);
 	}
 	free(pathname);
 	nvlist_free(nverrlist);
