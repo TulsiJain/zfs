@@ -7275,6 +7275,9 @@ print_error_log(zpool_handle_t *zhp)
 		uint64_t *block_ids;
 		int64_t *levels;
 
+		// block_ids = kmem_alloc(count * sizeof (uint64_t), KM_SLEEP);
+		// levels = kmem_alloc(count * sizeof (int64_t), KM_SLEEP);
+
 		verify(nvpair_value_nvlist(elem, &nv) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_DATASET,
 		    &dsobj) == 0);
@@ -7289,7 +7292,7 @@ print_error_log(zpool_handle_t *zhp)
 
 		printf("dsobj is %llu\n", (u_longlong_t)dsobj);
 		printf("obj is %llu\n", (u_longlong_t)obj);
-		printf("level is %llu\n", (u_longlong_t)same_object_count);
+		printf("Total error in this file is %llu\n", (u_longlong_t)same_object_count);
 
 		for (int hm =0; hm < same_object_count ; hm++){
 		    printf("block_ids is %llu\n", (u_longlong_t)block_ids[hm]);
