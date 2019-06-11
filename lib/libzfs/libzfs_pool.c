@@ -4247,7 +4247,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			goto nomem;
 		}
 		block_ids = kmem_alloc(count * sizeof (uint64_t), KM_SLEEP);
-		block_ids = kmem_alloc(count * sizeof (int64_t), KM_SLEEP);
+		levels = kmem_alloc(count * sizeof (int64_t), KM_SLEEP);
 		if (nvlist_add_uint64(nv, ZPOOL_ERR_DATASET,
 		    zb[i].zb_objset) != 0) {
 			nvlist_free(nv);
