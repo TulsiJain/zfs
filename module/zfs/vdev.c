@@ -1852,13 +1852,10 @@ vdev_open(vdev_t *vd)
 
 	/*
 	 * Track the min and max ashift values for normal data devices.
-	 *
-	 * DJB - TBD these should perhaps be tracked per allocation class
-	 * (e.g. spa_min_ashift is used to round up post compression buffers)
 	 */
 	if (vd->vdev_top == vd && vd->vdev_ashift != 0 &&
 	    vd->vdev_alloc_bias == VDEV_BIAS_NONE &&
-	    vd->vdev_aux == NULL) {
+	    vd->vdev_islog == 0 && vd->vdev_aux == NULL) {
 		if (vd->vdev_ashift > spa->spa_max_ashift)
 			spa->spa_max_ashift = vd->vdev_ashift;
 		if (vd->vdev_ashift < spa->spa_min_ashift)
@@ -3236,6 +3233,20 @@ vdev_sync_done(vdev_t *vd, uint64_t txg)
 	while ((msp = txg_list_remove(&vd->vdev_ms_list, TXG_CLEAN(txg)))
 	    != NULL)
 		metaslab_sync_done(msp, txg);
+
+	/*
+	 * Because this function is only called on dirty vdevs, it's possible
+	 * we won't consider all metaslabs for unloading on every
+	 * txg. However, unless the system is largely idle it is likely that
+	 * we will dirty all vdevs within a few txgs.
+	 */
+	for (int i = 0; i < vd->vdev_ms_count; i++) {
+		msp = vd->vdev_ms[i];
+		mutex_enter(&msp->ms_lock);
+		if (msp->ms_sm != NULL)
+			metaslab_potentially_unload(msp, txg);
+		mutex_exit(&msp->ms_lock);
+	}
 
 	if (reassess)
 		metaslab_sync_reassess(vd->vdev_mg);

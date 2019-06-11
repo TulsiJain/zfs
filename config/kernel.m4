@@ -12,7 +12,6 @@ AC_DEFUN([ZFS_AC_CONFIG_KERNEL], [
 	ZFS_AC_KERNEL_CTL_NAME
 	ZFS_AC_KERNEL_PDE_DATA
 	ZFS_AC_KERNEL_2ARGS_VFS_FSYNC
-	ZFS_AC_KERNEL_FS_STRUCT_SPINLOCK
 	ZFS_AC_KERNEL_KUIDGID_T
 	ZFS_AC_KERNEL_FALLOCATE
 	ZFS_AC_KERNEL_2ARGS_ZLIB_DEFLATE_WORKSPACESIZE
@@ -529,10 +528,11 @@ AC_DEFUN([ZFS_AC_KERNEL_CONFIG_TRIM_UNUSED_KSYMS], [
 		AC_MSG_RESULT([yes])
 	],[
 		AC_MSG_RESULT([no])
-		AC_MSG_ERROR([
+		AS_IF([test "x$enable_linux_builtin" != xyes], [
+			AC_MSG_ERROR([
 	*** This kernel has unused symbols trimming enabled, please disable.
 	*** Rebuild the kernel with CONFIG_TRIM_UNUSED_KSYMS=n set.])
-	])
+	])])
 ])
 
 dnl #

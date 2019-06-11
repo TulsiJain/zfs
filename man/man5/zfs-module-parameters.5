@@ -1817,7 +1817,7 @@ this value. If a metaslab group exceeds this threshold then it will be
 skipped unless all metaslab groups within the metaslab class have also
 crossed this threshold.
 .sp
-Default value: \fB85\fR.
+Default value: \fB95\fR.
 .RE
 
 .sp
@@ -2824,6 +2824,18 @@ This controls the number of threads used by the dp_zil_clean_taskq.  The default
 value of 100% will create a maximum of one thread per cpu.
 .sp
 Default value: \fB100\fR%.
+.RE
+
+.sp
+.ne 2
+.na
+\fBzil_maxblocksize\fR (int)
+.ad
+.RS 12n
+This sets the maximum block size used by the ZIL.  On very fragmented pools,
+lowering this (typically to 36KB) can improve performance.
+.sp
+Default value: \fB131072\fR (128KB).
 .RE
 
 .sp
