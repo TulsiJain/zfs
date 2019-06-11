@@ -7289,7 +7289,7 @@ print_error_log(zpool_handle_t *zhp)
 		    &indirect_block_size);
 
 		printf("Total error in this file is %u\n", error_count);
-		printf("data_block_size is %lu\n", block_size);
+		printf("data_block_size is %lu\n", data_block_size);
 		printf("indirect_block_size is %lu\n", 
 			indirect_block_size);
 
