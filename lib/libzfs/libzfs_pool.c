@@ -4215,11 +4215,8 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		    zb[i-1].zb_object == zb[i].zb_object){
 		    	block_ids[same_object_block] = zb[i].zb_blkid;
 		    	levels[same_object_block] = zb[i].zb_level;
-		    	printf("%s\n", "First");
-			printf("level is %lx\n", zb[i].zb_level);
 		    	printf("level is %lx\n", levels[same_object_block]);
-		    	printf("blockid is %lu\n", zb[i].zb_blkid);
-			printf("blockid is %lu\n", block_ids[same_object_block]);
+			printf("block id is %lu\n", block_ids[same_object_block]);
 			same_object_block++;
 			if (i == count - 1){
 				printf("%s\n", "added");
