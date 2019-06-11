@@ -7275,8 +7275,6 @@ print_error_log(zpool_handle_t *zhp)
 		uint64_t *block_ids;
 		int64_t *levels;
 
-
-
 		verify(nvpair_value_nvlist(elem, &nv) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_DATASET,
 		    &dsobj) == 0);
@@ -7288,10 +7286,15 @@ print_error_log(zpool_handle_t *zhp)
 		    &block_ids, &same_object_count) == 0);
 		
 		printf("%s\n", "print_error_log while verify" );
-		
+
 		printf("dsobj is %llu\n", (u_longlong_t)dsobj);
 		printf("obj is %llu\n", (u_longlong_t)obj);
 		printf("level is %llu\n", (u_longlong_t)same_object_count);
+
+		for (int hm =0; hm < count ; hm++){
+		    printf("block_ids is %llu\n", (u_longlong_t)block_ids[i]);
+		    printf("level is %llx\n", (u_longlong_t)levels[i]);
+		}
 		
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len, &block_size,
