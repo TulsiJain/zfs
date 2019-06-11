@@ -7289,7 +7289,7 @@ print_error_log(zpool_handle_t *zhp)
 		
 		printf("dsobj is %llu\n", (u_longlong_t)dsobj);
 		printf("obj is %llu\n", (u_longlong_t)obj);
-		printf("level is %llu\n", same_object_count);
+		printf("level is %llu\n", (u_longlong_t)same_object_count);
 		
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len, &block_size,
