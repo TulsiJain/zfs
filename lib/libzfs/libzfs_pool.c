@@ -4134,30 +4134,22 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	 */
 	verify(nvlist_lookup_uint64(zhp->zpool_config, ZPOOL_CONFIG_ERRCOUNT,
 	    &count) == 0);
-	printf("count is %llu\n", (u_longlong_t)count);
-	
+
 	if (count == 0){
 		return (0);
 	}
 
-	printf("size of sizeof zbookmark_phys_t is %zu\n", sizeof(zbookmark_phys_t));
-
 	zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
 	    count * sizeof (zbookmark_phys_t));
-	
 	zc.zc_nvlist_dst_size = count;
-
-	printf("zc_nvlist_dst_size before kernel %llu\n", (u_longlong_t)zc.zc_nvlist_dst_size);
 	
 	(void) strcpy(zc.zc_name, zhp->zpool_name);
 	for (;;) {
 		printf("infinite for loop executing \n");
 		if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_ERROR_LOG,
 		    &zc) != 0) {
-		    	printf("ioctl returns non zero \n");
 			free((void *)(uintptr_t)zc.zc_nvlist_dst);
 			if (errno == ENOMEM) {
-				printf("ioctl returs non zero ENOMEM \n");
 				void *dst;
 
 				count = zc.zc_nvlist_dst_size;
@@ -4165,14 +4157,11 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 				    sizeof (zbookmark_phys_t));
 				zc.zc_nvlist_dst = (uintptr_t)dst;
 			} else {
-				printf("ioctl returs non zero NON ENOMEM \n");
 				return (zpool_standard_error_fmt(hdl, errno,
 				    dgettext(TEXT_DOMAIN, "errors: List of "
 				    "errors unavailable")));
 			}
 		} else {
-			printf("ioctl success\n");
-			printf("let's move forward success\n");
 			break;
 		}
 	}
@@ -4186,8 +4175,6 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	 * _not_ copied as part of the process.  So we point the start of our
 	 * array appropriate and decrement the total number of elements.
 	 */
-
-	printf("zc_nvlist_dst_size after kernel %llu\n", (u_longlong_t)zc.zc_nvlist_dst_size);
 	
 	zb = ((zbookmark_phys_t *)(uintptr_t)zc.zc_nvlist_dst) +
 	    zc.zc_nvlist_dst_size;
@@ -4215,8 +4202,6 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		    zb[i-1].zb_object == zb[i].zb_object){
 		    	block_ids[same_object_block] = zb[i].zb_blkid;
 		    	levels[same_object_block] = zb[i].zb_level;
-		    	printf("level is %lx\n", levels[same_object_block]);
-			printf("block id is %lu\n", block_ids[same_object_block]);
 			same_object_block++;
 			if (i == count - 1){
 				if (nvlist_add_int64_array(nv, ZPOOL_ERR_LEVEL,

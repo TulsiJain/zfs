@@ -7288,16 +7288,12 @@ print_error_log(zpool_handle_t *zhp)
 		verify(nvlist_lookup_uint64_array(nv, ZPOOL_ERR_BLOCKID,
 		    &block_ids, &same_object_count) == 0);
 		
-		printf("%s\n", "print_error_log while verify" );
-
 		printf("Total error in this file is %u\n", same_object_count);
 
 		for (int hm = 0; hm < same_object_count ; hm++){
-		    printf("level is %lx\n", levels[hm]);
-		    printf("block id is %lu\n", block_ids[hm]);
+			
 		}
 		
-		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len, &block_size,
 		    &indirect_block_size);
 		printf("block_size is %lu\n", block_size);
