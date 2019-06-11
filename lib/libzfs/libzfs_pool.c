@@ -4206,6 +4206,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 
 	nvlist_t *nv;
 	uint64_t *block_ids;
+	int64_t *levels;
 	int same_object_block = 0;
 	for (i = 0; i < count; i++) {
 
@@ -4219,8 +4220,8 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			// printf("blockid is %llu\n", (u_longlong_t)zb[i].zb_blkid);
 			if (i == count - 1){
 				printf("%s\n", "added");
-				if (nvlist_add_uint64_array(nv, ZPOOL_ERR_LEVEL,
-				    block_ids, same_object_block) != 0) {
+				if (nvlist_add_int64_array(nv, ZPOOL_ERR_LEVEL,
+				    levels, same_object_block) != 0) {
 					nvlist_free(nv);
 					goto nomem;
 				}
@@ -4257,8 +4258,8 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		}
 		same_object_block = 1;
 		if ( i > 0){
-			if (nvlist_add_uint64_array(nv, ZPOOL_ERR_LEVEL,
-			    block_ids, same_object_block) != 0) {
+			if (nvlist_add_int64_array(nv, ZPOOL_ERR_LEVEL,
+			    levels, same_object_block) != 0) {
 				nvlist_free(nv);
 				goto nomem;
 			}

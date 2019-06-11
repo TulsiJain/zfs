@@ -7270,7 +7270,7 @@ print_error_log(zpool_handle_t *zhp)
 		printf("%s\n", "print_error_log while" );
 
 		nvlist_t *nv;
-		uint64_t dsobj, obj, blockid, block_size, indirect_block_size, level;
+		uint64_t dsobj, obj,  block_size, indirect_block_size;
 		unsigned int same_object_count;
 		uint64_t *hole_array;
 
@@ -7280,8 +7280,8 @@ print_error_log(zpool_handle_t *zhp)
 		    &dsobj) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_OBJECT,
 		    &obj) == 0);
-		// verify(nvlist_lookup_uint64_array(nv, ZPOOL_ERR_LEVEL,
-		//     hole_array, &same_object_count) == 0);
+		verify(nvlist_lookup_uint64_array(nv, ZPOOL_ERR_LEVEL,
+		    hole_array, &same_object_count) == 0);
 		verify(nvlist_lookup_uint64_array(nv, ZPOOL_ERR_BLOCKID,
 		    &hole_array, &same_object_count) == 0);
 		
@@ -7289,8 +7289,7 @@ print_error_log(zpool_handle_t *zhp)
 		
 		printf("dsobj is %llu\n", (u_longlong_t)dsobj);
 		printf("obj is %llu\n", (u_longlong_t)obj);
-		printf("level is %llu\n", (u_longlong_t)level);
-		printf("blockid is %llu\n", (u_longlong_t)blockid);
+		printf("level is %llu\n", same_object_count);
 		
 		printf("%s\n", "print_error_log while verify" );
 		zpool_obj_to_path(zhp, dsobj, obj, pathname, len, &block_size,
