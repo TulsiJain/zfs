@@ -7275,9 +7275,6 @@ print_error_log(zpool_handle_t *zhp)
 		uint64_t *block_ids;
 		int64_t *levels;
 
-		// block_ids = kmem_alloc(count * sizeof (uint64_t), KM_SLEEP);
-		// levels = kmem_alloc(count * sizeof (int64_t), KM_SLEEP);
-
 		verify(nvpair_value_nvlist(elem, &nv) == 0);
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_DATASET,
 		    &dsobj) == 0);
@@ -7296,7 +7293,7 @@ print_error_log(zpool_handle_t *zhp)
 		printf("indirect_block_size is %lu\n", 
 			indirect_block_size);
 
-		uint64_t offset_minimum;
+		uint64_t offset_minimum = 0;
 		for (int hm = 0; hm < same_object_count ; hm++){
 			uint64_t offset = block_ids[hm]*block_size;
 			if (offset_minimum > offset) {
