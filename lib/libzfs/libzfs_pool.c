@@ -4257,6 +4257,8 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			nvlist_free(nv);
 			goto nomem;
 		}
+		block_ids[same_object_block] = zb[i].zb_blkid;
+		levels[same_object_block] = zb[i].zb_level;
 		same_object_block = 1;
 		if ( i > 0){
 			if (nvlist_add_int64_array(nv, ZPOOL_ERR_LEVEL,
