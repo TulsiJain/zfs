@@ -7290,7 +7290,7 @@ print_error_log(zpool_handle_t *zhp)
 		
 		printf("%s\n", "print_error_log while verify" );
 
-		printf("Total error in this file is %lu\n", same_object_count);
+		printf("Total error in this file is %u\n", same_object_count);
 
 		for (int hm = 0; hm < same_object_count ; hm++){
 		    printf("level is %lx\n", levels[hm]);
