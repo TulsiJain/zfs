@@ -7292,8 +7292,8 @@ print_error_log(zpool_handle_t *zhp)
 		printf("level is %llu\n", (u_longlong_t)same_object_count);
 
 		for (int hm =0; hm < same_object_count ; hm++){
-		    printf("block_ids is %llu\n", (u_longlong_t)block_ids[i]);
-		    printf("level is %llx\n", (u_longlong_t)levels[i]);
+		    printf("block_ids is %llu\n", (u_longlong_t)block_ids[hm]);
+		    printf("level is %llx\n", (u_longlong_t)levels[hm]);
 		}
 		
 		printf("%s\n", "print_error_log while verify" );
