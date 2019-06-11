@@ -7296,7 +7296,7 @@ print_error_log(zpool_handle_t *zhp)
 		if (error_count > 0){
 			uint64_t blkptrs_in_indblk = indirect_block_size/128;
 			uint64_t min_offset_blks =
-			pow(blkptrs_in_indblk, levels[i])*block_ids[0];
+			pow(blkptrs_in_indblk, levels[0])*block_ids[0];
 			for (int i = 1; i < error_count; i++) {
 				uint64_t offset_blks = pow(blkptrs_in_indblk, levels[i])*block_ids[i];
 				if (min_offset_blks > offset_blks) {
