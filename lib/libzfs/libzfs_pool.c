@@ -4217,9 +4217,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		    	levels[same_object_block] = zb[i].zb_level;
 		    	printf("level is %lx\n", levels[same_object_block]);
 			printf("block id is %lu\n", block_ids[same_object_block]);
-			same_object_block++;
 			if (i == count - 1){
-				printf("%s\n", "added");
 				if (nvlist_add_int64_array(nv, ZPOOL_ERR_LEVEL,
 				    levels, same_object_block) != 0) {
 					nvlist_free(nv);
@@ -4238,6 +4236,8 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 				}
 				nvlist_free(nv);
 				same_object_block = 0;
+			}else{
+				same_object_block++;
 			}
 			continue;
 		}
