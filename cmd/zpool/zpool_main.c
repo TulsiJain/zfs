@@ -7303,13 +7303,13 @@ print_error_log(zpool_handle_t *zhp)
 					min_offset_blks = offset_blks;
 				}
 			}
-			(void) printf("%7s %s at offset %lu bytes\n ", "",
+			uint64_t min_offset_kbs =
+			data_block_size*min_offset_blks/1024;
+			(void) printf("%7s %s at offset %lu kb\n ", "",
 			    pathname, min_offset_blks);
 		}else{
 			(void) printf("%7s %s\n ", "", pathname);
 		}
-		
-		
 	}
 	free(pathname);
 	nvlist_free(nverrlist);
