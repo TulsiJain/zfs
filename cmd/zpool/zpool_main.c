@@ -7270,8 +7270,8 @@ print_error_log(zpool_handle_t *zhp)
 		printf("%s\n", "print_error_log while" );
 
 		nvlist_t *nv;
-		uint64_t dsobj, obj,  block_size, indirect_block_size;
-		unsigned int same_object_count;
+		uint64_t dsobj, obj,  data_block_size, indirect_block_size;
+		unsigned int error_count;
 		uint64_t *block_ids;
 		int64_t *levels;
 
@@ -7281,28 +7281,35 @@ print_error_log(zpool_handle_t *zhp)
 		verify(nvlist_lookup_uint64(nv, ZPOOL_ERR_OBJECT,
 		    &obj) == 0);
 		verify(nvlist_lookup_int64_array(nv, ZPOOL_ERR_LEVEL,
-		    &levels, &same_object_count) == 0);
+		    &levels, &error_count) == 0);
 		verify(nvlist_lookup_uint64_array(nv, ZPOOL_ERR_BLOCKID,
-		    &block_ids, &same_object_count) == 0);
+		    &block_ids, &error_count) == 0);
 		
-		zpool_obj_to_path(zhp, dsobj, obj, pathname, len, &block_size,
+		zpool_obj_to_path(zhp, dsobj, obj, pathname, len, &data_block_size,
 		    &indirect_block_size);
 
-		printf("Total error in this file is %u\n", same_object_count);
-		printf("block_size is %lu\n", block_size);
+		printf("Total error in this file is %u\n", error_count);
+		printf("data_block_size is %lu\n", block_size);
 		printf("indirect_block_size is %lu\n", 
 			indirect_block_size);
 
-		uint64_t offset_minimum = 0;
-		for (int hm = 0; hm < same_object_count ; hm++){
-			uint64_t offset = block_ids[hm]*block_size;
-			if (offset_minimum > offset) {
-				offset_minimum = offset;
+		if (error_count > 0){
+			uint64_t blkptrs_in_indblk = indirect_block_size/128;
+			uint64_t min_offset_blks =
+			pow(blkptrs_in_indblk, levels[i])*block_ids[i];
+			for (int i = 1; i < error_count; i++) {
+				uint64_t offset_blks = pow(blkptrs_in_indblk, levels[i])*block_ids[i];
+				if (min_offset_blks > offset_blks) {
+					min_offset_blks = offset_blks;
+				}
 			}
+			(void) printf("%7s %s at offset %lu bytes\n ", "",
+			    pathname, min_offset_blks);
+		}else{
+			(void) printf("%7s %s\n ", "", pathname);
 		}
 		
-		(void) printf("%7s %s at offset %lu bytes \n ", "", pathname,
-		    offset_minimum);
+		
 	}
 	free(pathname);
 	nvlist_free(nverrlist);
