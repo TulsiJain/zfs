@@ -7306,7 +7306,7 @@ print_error_log(zpool_handle_t *zhp)
 			uint64_t min_offset_kbs =
 			data_block_size*min_offset_blks/1024;
 			(void) printf("%7s %s at offset %lu kb\n ", "",
-			    pathname, min_offset_blks);
+			    pathname, min_offset_kbs);
 		}else{
 			(void) printf("%7s %s\n ", "", pathname);
 		}
