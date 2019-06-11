@@ -4214,6 +4214,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 		if (i > 0 && zb[i-1].zb_objset == zb[i].zb_objset &&
 		    zb[i-1].zb_object == zb[i].zb_object){
 		    	block_ids[same_object_block] = zb[i].zb_blkid;
+		    	levels[same_object_block] = zb[i].zb_level;
 			same_object_block++;
 		    	// printf("%s\n", "First");
 		    	// printf("level is %llx\n", (u_longlong_t)zb[i].zb_level);
@@ -4246,6 +4247,7 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 			goto nomem;
 		}
 		block_ids = kmem_alloc(count * sizeof (uint64_t), KM_SLEEP);
+		block_ids = kmem_alloc(count * sizeof (int64_t), KM_SLEEP);
 		if (nvlist_add_uint64(nv, ZPOOL_ERR_DATASET,
 		    zb[i].zb_objset) != 0) {
 			nvlist_free(nv);
