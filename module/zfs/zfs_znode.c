@@ -2075,11 +2075,6 @@ zfs_obj_to_stats_impl(sa_handle_t *hdl, sa_attr_type_t *sa_table,
 	dmu_object_info_t doi;
 	sa_object_info(hdl, &doi);
 
-	#if _KERNEL
-		printk("doi_data_block_size %u\n",  doi.doi_data_block_size);
-		printk("doi_metadata_block_size %u\n",  doi.doi_metadata_block_size);
-	#else
-	#endif
 
 	SA_ADD_BULK_ATTR(bulk, count, sa_table[ZPL_MODE], NULL,
 	    &sb->zs_mode, sizeof (sb->zs_mode));
@@ -2092,17 +2087,6 @@ zfs_obj_to_stats_impl(sa_handle_t *hdl, sa_attr_type_t *sa_table,
 
 	sb->block_size = doi.doi_data_block_size;
 	sb->indirect_block_size = doi.doi_metadata_block_size;
-
-	// SA_ADD_BULK_ATTR(bulk, count, doi->doi_data_block_size, NULL,
-	//     &sb->block_size, sizeof (sb->block_size));
-	// SA_ADD_BULK_ATTR(bulk, count, doi->doi_metadata_block_size, NULL,
-	//     &sb->indirect_block_size, sizeof (sb->indirect_block_size));
-
-	#if _KERNEL
-		printk("doi_data_block_size %llu\n",  sb->block_size);
-		printk("doi_metadata_block_size %llu\n",  sb->indirect_block_size);
-	#else
-	#endif
 
 	return (sa_bulk_lookup(hdl, bulk, count));
 }

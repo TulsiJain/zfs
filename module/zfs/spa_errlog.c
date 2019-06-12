@@ -178,10 +178,7 @@ process_error_log(spa_t *spa, uint64_t obj, void *addr, size_t *count)
 			return (SET_ERROR(ENOMEM));
 		}
 
-		printk("za.za_name %s\n",  za.za_name);
-
 		name_to_bookmark(za.za_name, &zb);
-
 		if (copyout(&zb, (char *)addr +
 		    (*count - 1) * sizeof (zbookmark_phys_t),
 		    sizeof (zbookmark_phys_t)) != 0) {
@@ -346,6 +343,10 @@ spa_errlog_sync(spa_t *spa, uint64_t txg)
 	dmu_tx_t *tx;
 	avl_tree_t scrub, last;
 	int scrub_finished;
+
+	#if _KERNEL
+		printf("%s\n", "spa_errlog_sync");
+	#endif
 
 	mutex_enter(&spa->spa_errlist_lock);
 

@@ -4860,6 +4860,11 @@ int
 spa_get_stats(const char *name, nvlist_t **config,
     char *altroot, size_t buflen)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered spa_get_stats" );
+	#else
+		printf("%s\n", "POOL_SCAN_SCRUB dsl_scan_is_paused_scrub" );
+	#endif
 	int error;
 	spa_t *spa;
 
