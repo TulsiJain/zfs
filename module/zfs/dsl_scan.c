@@ -773,8 +773,8 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 	dsl_scan_t *scn = dp->dp_scan;
 
 	#ifdef _KERNEL
-		printk("%s\n", "dsl_scan entered" );
-	#else
+		printk("%s\n", "dsl_scan dsl_scan_is_paused_scrub" );
+	#endif
 
 	/*
 	 * Purge all vdev caches and probe all devices.  We do this here
