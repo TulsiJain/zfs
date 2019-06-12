@@ -158,7 +158,7 @@ spa_get_errlog_size(spa_t *spa)
 		total += count;
 
 	#if _KERNEL
-		printfk("total is %llu\n", total);
+		printk("total is %llu\n", total);
 	#endif
 	mutex_exit(&spa->spa_errlog_lock);
 
