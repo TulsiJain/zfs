@@ -363,7 +363,7 @@ spa_errlog_sync(spa_t *spa, uint64_t txg)
 	int scrub_finished;
 
 	#if _KERNEL
-		printf("%s\n", "spa_errlog_sync");
+		printk("%s\n", "spa_errlog_sync");
 	#endif
 
 	mutex_enter(&spa->spa_errlist_lock);
