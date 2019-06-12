@@ -46,7 +46,7 @@ dsl_sync_task_common(const char *pool, dsl_checkfunc_t *checkfunc,
 {
 	#ifdef _KERNEL
 		printk("%s\n", "entered dsl_sync_task_common" );
-	#else
+	#endif
 	spa_t *spa;
 	dmu_tx_t *tx;
 	int err;
