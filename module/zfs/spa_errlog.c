@@ -97,6 +97,11 @@ spa_log_error(spa_t *spa, const zbookmark_phys_t *zb)
 	avl_tree_t *tree;
 	avl_index_t where;
 
+	#if _KERNEL
+		printk("%s\n",  "I am logging errors");
+	#endif
+
+
 	/*
 	 * If we are trying to import a pool, ignore any errors, as we won't be
 	 * writing to the pool any time soon.
@@ -282,6 +287,9 @@ spa_get_errlog(spa_t *spa, void *uaddr, size_t *count)
 void
 spa_errlog_rotate(spa_t *spa)
 {
+	#if _KERNEL
+		printk("%s\n",  "scrub complete");
+	#endif
 	mutex_enter(&spa->spa_errlist_lock);
 	spa->spa_scrub_finished = B_TRUE;
 	mutex_exit(&spa->spa_errlist_lock);
@@ -294,6 +302,9 @@ spa_errlog_rotate(spa_t *spa)
 void
 spa_errlog_drain(spa_t *spa)
 {
+	#if _KERNEL
+		printk("%s\n",  "Discard any pending");
+	#endif
 	spa_error_entry_t *se;
 	void *cookie;
 
@@ -317,6 +328,9 @@ spa_errlog_drain(spa_t *spa)
 static void
 sync_error_list(spa_t *spa, avl_tree_t *t, uint64_t *obj, dmu_tx_t *tx)
 {
+	#if _KERNEL
+		printk("%s\n",  "sync_error_list");
+	#endif
 	spa_error_entry_t *se;
 	char buf[64];
 	void *cookie;

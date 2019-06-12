@@ -2342,8 +2342,11 @@ zpool_scan(zpool_handle_t *zhp, pool_scan_func_t func, pool_scrub_cmd_t cmd)
 
 	/* ECANCELED on a scrub means we resumed a paused scrub */
 	if (err == ECANCELED && func == POOL_SCAN_SCRUB &&
-	    cmd == POOL_SCRUB_NORMAL)
+	    cmd == POOL_SCRUB_NORMAL){
+	    	printf("%s\n",  "came here");
 		return (0);
+	}
+		
 
 	if (err == ENOENT && func != POOL_SCAN_NONE && cmd == POOL_SCRUB_NORMAL)
 		return (0);
