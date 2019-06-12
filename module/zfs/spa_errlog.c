@@ -138,21 +138,39 @@ spa_get_errlog_size(spa_t *spa)
 {
 	uint64_t total = 0, count;
 
+	#if _KERNEL
+		printf("total is %lu\n", total);
+	#endif
+
 	mutex_enter(&spa->spa_errlog_lock);
 	if (spa->spa_errlog_scrub != 0 &&
 	    zap_count(spa->spa_meta_objset, spa->spa_errlog_scrub,
 	    &count) == 0)
 		total += count;
 
+	#if _KERNEL
+		printf("total is %lu\n", total);
+	#endif
+
 	if (spa->spa_errlog_last != 0 && !spa->spa_scrub_finished &&
 	    zap_count(spa->spa_meta_objset, spa->spa_errlog_last,
 	    &count) == 0)
 		total += count;
+
+	#if _KERNEL
+		printf("total is %lu\n", total);
+	#endif
 	mutex_exit(&spa->spa_errlog_lock);
 
 	mutex_enter(&spa->spa_errlist_lock);
 	total += avl_numnodes(&spa->spa_errlist_last);
+	#if _KERNEL
+		printf("total is %lu\n", total);
+	#endif
 	total += avl_numnodes(&spa->spa_errlist_scrub);
+	#if _KERNEL
+		printf("total is %lu\n", total);
+	#endif
 	mutex_exit(&spa->spa_errlist_lock);
 
 	return (total);
