@@ -1740,6 +1740,7 @@ zfs_ioc_pool_scan(zfs_cmd_t *zc)
 {
 	spa_t *spa;
 	int error;
+	printk("%s\n", "entered zfs_ioc_pool_scan");
 
 	if (zc->zc_flags >= POOL_SCRUB_FLAGS_END){
 		printk("%s\n", "entered POOL_SCRUB_FLAGS_END else");
@@ -1761,7 +1762,6 @@ zfs_ioc_pool_scan(zfs_cmd_t *zc)
 	}
 	else{
 		printk("%s\n", "This is expected dude");
-		printk("%s\n", "entered zfs_ioc_pool_scan else");
 		error = spa_scan(spa, zc->zc_cookie);
 	}
 

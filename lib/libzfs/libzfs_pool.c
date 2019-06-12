@@ -2323,7 +2323,7 @@ zpool_trim(zpool_handle_t *zhp, pool_trim_func_t cmd_type, nvlist_t *vds,
 int
 zpool_scan(zpool_handle_t *zhp, pool_scan_func_t func, pool_scrub_cmd_t cmd)
 {
-	printf("%s\n",  "zpool_scan");
+	printf("%s\n",  "zpool_scan started");
 	zfs_cmd_t zc = {"\0"};
 	char msg[1024];
 	int err;

@@ -7282,8 +7282,6 @@ spa_scan(spa_t *spa, pool_scan_func_t func)
 
 	#ifdef _KERNEL
 		printk("%s\n", "spa_scan entered" );
-	#else
-		printf("%s\n", "spa_scan entered" );
 	#endif
 
 	if (func >= POOL_SCAN_FUNCS || func == POOL_SCAN_NONE){

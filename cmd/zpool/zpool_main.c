@@ -6682,7 +6682,6 @@ scrub_callback(zpool_handle_t *zhp, void *data)
 	scrub_cbdata_t *cb = data;
 	int err;
 
-
 	printf("%s\n", "scrub_callback");
 
 	/*
@@ -6718,6 +6717,7 @@ scrub_callback(zpool_handle_t *zhp, void *data)
 int
 zpool_do_scrub(int argc, char **argv)
 {
+	printf("%s\n", "I am zpool scrub is called bro");
 	int c;
 	scrub_cbdata_t cb;
 
