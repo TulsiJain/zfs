@@ -73,6 +73,9 @@ top:
 	dst.dst_nowaiter = B_FALSE;
 
 	dsl_pool_config_enter(dp, FTAG);
+	#ifdef _KERNEL
+		printk("%s\n", "about to called check function" );
+	#endif
 	err = dst.dst_checkfunc(arg, tx);
 	dsl_pool_config_exit(dp, FTAG);
 
@@ -96,6 +99,9 @@ top:
 	}
 
 	spa_close(spa, FTAG);
+
+	#ifdef _KERNEL
+		printk("%s\n", "dsl_sync_task retured" );
 	return (dst.dst_error);
 }
 
