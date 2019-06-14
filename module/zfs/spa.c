@@ -7308,12 +7308,6 @@ spa_scan(spa_t *spa, pool_scan_func_t func)
 		return (0);
 	}
 
-	#ifdef _KERNEL
-		printk("%s\n", "dsl_scan entered" );
-	#else
-		printf("%s\n", "dsl_scan entered" );
-	#endif
-
 	return (dsl_scan(spa->spa_dsl_pool, func));
 }
 
