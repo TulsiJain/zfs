@@ -773,7 +773,7 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 	dsl_scan_t *scn = dp->dp_scan;
 
 	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_scan" );
+		printk("%s\n", "entered dsl_scan");
 	#endif
 
 	/*
@@ -806,6 +806,10 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 
 		return (SET_ERROR(err));
 	}
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan");
+	#endif
 
 	return (dsl_sync_task(spa_name(spa), dsl_scan_setup_check,
 	    dsl_scan_setup_sync, &func, 0, ZFS_SPACE_CHECK_EXTRA_RESERVED));

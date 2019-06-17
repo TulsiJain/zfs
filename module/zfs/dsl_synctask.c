@@ -96,6 +96,9 @@ top:
 	}
 
 	spa_close(spa, FTAG);
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_sync_task_common" );
+	#endif
 	return (dst.dst_error);
 }
 
@@ -128,8 +131,12 @@ dsl_sync_task(const char *pool, dsl_checkfunc_t *checkfunc,
     int blocks_modified, zfs_space_check_t space_check)
 {
 	#ifdef _KERNEL
-		printk("%s\n", "dsl_sync_task entered" );
+		printk("%s\n", "entered dsl_sync_task" );
 	#endif	
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_sync_task");
+	#endif
 	return (dsl_sync_task_common(pool, checkfunc, syncfunc, arg,
 	    blocks_modified, space_check, B_FALSE));
 }
