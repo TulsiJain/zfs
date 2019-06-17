@@ -426,6 +426,7 @@ int
 dsl_scan_init(dsl_pool_t *dp, uint64_t txg)
 {
 	#ifdef _KERNEL
+
 		printk("%s\n", " entered dsl_scan_init" );
 	#endif
 
@@ -577,7 +578,7 @@ void
 dsl_scan_fini(dsl_pool_t *dp)
 {
 	#ifdef _KERNEL
-		printk("%s\n", " entered dsl_scan_fini" );
+		printk("%s\n", "entered dsl_scan_fini" );
 	#endif
 	if (dp->dp_scan != NULL) {
 		dsl_scan_t *scn = dp->dp_scan;
@@ -603,11 +604,11 @@ static boolean_t
 dsl_scan_restarting(dsl_scan_t *scn, dmu_tx_t *tx)
 {
 	#ifdef _KERNEL
-		printk("%s\n", " entered dsl_scan_scrubbing" );
+		printk("%s\n", "entered dsl_scan_restarting" );
 	#endif
 
 	#ifdef _KERNEL
-		printk("%s\n", " returned dsl_scan_scrubbing" );
+		printk("%s\n", "returned dsl_scan_restarting" );
 	#endif
 	return (scn->scn_restart_txg != 0 &&
 	    scn->scn_restart_txg <= tx->tx_txg);
@@ -617,13 +618,13 @@ boolean_t
 dsl_scan_scrubbing(const dsl_pool_t *dp)
 {
 	#ifdef _KERNEL
-		printk("%s\n", " entered dsl_scan_scrubbing" );
+		printk("%s\n", "entered dsl_scan_scrubbing" );
 	#endif
 	
 	dsl_scan_phys_t *scn_phys = &dp->dp_scan->scn_phys;
 
 	#ifdef _KERNEL
-		printk("%s\n", " returned dsl_scan_scrubbing" );
+		printk("%s\n", "returned dsl_scan_scrubbing" );
 	#endif
 
 	return (scn_phys->scn_state == DSS_SCANNING &&
@@ -633,6 +634,14 @@ dsl_scan_scrubbing(const dsl_pool_t *dp)
 boolean_t
 dsl_scan_is_paused_scrub(const dsl_scan_t *scn)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_is_paused_scrub");
+	#endif
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_is_paused_scrub");
+	#endif
+
 	return (dsl_scan_scrubbing(scn->scn_dp) &&
 	    scn->scn_phys.scn_flags & DSF_SCRUB_PAUSED);
 }
@@ -3564,7 +3573,7 @@ dsl_scan_sync(dsl_pool_t *dp, dmu_tx_t *tx)
 			} else if (!should_clear && scn->scn_clearing) {
 				zfs_dbgmsg("finish scan clearing");
 				scn->scn_clearing = B_FALSE;
-			}
+ 			}
 		}
 	} else {
 		ASSERT0(scn->scn_checkpointing);
