@@ -678,16 +678,26 @@ static int
 dsl_scan_setup_check(void *arg, dmu_tx_t *tx)
 {
 	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
+	#ifdef _KERNEL
+		printk("%s\n", " entered dsl_scan_setup_check" );
+	#endif
 
 	if (dsl_scan_is_running(scn))
 		return (SET_ERROR(EBUSY));
 
+	#ifdef _KERNEL
+		printk("%s\n", " returned dsl_scan_setup_check" );
+	#endif
 	return (0);
 }
 
 static void
 dsl_scan_setup_sync(void *arg, dmu_tx_t *tx)
 {
+	#ifdef _KERNEL
+		printk("%s\n", " entered dsl_scan_setup_sync" );
+	#endif
+
 	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 	pool_scan_func_t *funcp = arg;
 	dmu_object_type_t ot = 0;
@@ -760,6 +770,9 @@ dsl_scan_setup_sync(void *arg, dmu_tx_t *tx)
 	spa_history_log_internal(spa, "scan setup", tx,
 	    "func=%u mintxg=%llu maxtxg=%llu",
 	    *funcp, scn->scn_phys.scn_min_txg, scn->scn_phys.scn_max_txg);
+	#ifdef _KERNEL
+		printk("%s\n", " returned dsl_scan_setup_sync" );
+	#endif
 }
 
 /*

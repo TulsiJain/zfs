@@ -72,6 +72,11 @@ top:
 	dst.dst_error = 0;
 	dst.dst_nowaiter = B_FALSE;
 
+
+	#ifdef _KERNEL
+		printk("%s\n", "about to call check func" );
+	#endif
+
 	dsl_pool_config_enter(dp, FTAG);
 	err = dst.dst_checkfunc(arg, tx);
 	dsl_pool_config_exit(dp, FTAG);
