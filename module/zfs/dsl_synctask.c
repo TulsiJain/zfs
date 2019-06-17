@@ -77,16 +77,7 @@ top:
 		printk("%s\n", "about to called  check function" );
 	#endif
 	err = dst.dst_checkfunc(arg, tx);
-
-	dsl_pool_config_enter(dp, FTAG);
-	#ifdef _KERNEL
-		printk("%s\n", "do not knw 1" );
-	#endif
 	dsl_pool_config_exit(dp, FTAG);
-
-	#ifdef _KERNEL
-		printk("%s\n", "do not knw 2" );
-	#endif
 
 	if (err != 0) {
 		dmu_tx_commit(tx);
@@ -98,33 +89,14 @@ top:
 	    &dp->dp_early_sync_tasks : &dp->dp_sync_tasks;
 	VERIFY(txg_list_add_tail(task_list, &dst, dst.dst_txg));
 
-	#ifdef _KERNEL
-		printk("%s\n", "do not knw 3" );
-	#endif
-
 	dmu_tx_commit(tx);
-
-	#ifdef _KERNEL
-		printk("%s\n", "do not knw 4" );
-	#endif
 
 	txg_wait_synced(dp, dst.dst_txg);
 
-	#ifdef _KERNEL
-		printk("%s\n", "do not knw 5" );
-	#endif
-
 	if (dst.dst_error == EAGAIN) {
-		#ifdef _KERNEL
-			printk("%s\n", "do not knw 7" );
-		#endif
 		txg_wait_synced(dp, dst.dst_txg + TXG_DEFER_SIZE);
 		goto top;
 	}
-
-	#ifdef _KERNEL
-			printk("%s\n", "do not knw 8" );
-		#endif
 
 	spa_close(spa, FTAG);
 
