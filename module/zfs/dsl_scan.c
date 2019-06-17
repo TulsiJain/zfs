@@ -425,6 +425,10 @@ bp2sio(const blkptr_t *bp, scan_io_t *sio, int dva_i)
 int
 dsl_scan_init(dsl_pool_t *dp, uint64_t txg)
 {
+	#ifdef _KERNEL
+		printk("%s\n", " entered dsl_scan_init" );
+	#endif
+
 	int err;
 	dsl_scan_t *scn;
 	spa_t *spa = dp->dp_spa;
@@ -562,12 +566,19 @@ dsl_scan_init(dsl_pool_t *dp, uint64_t txg)
 	}
 
 	spa_scan_stat_init(spa);
+
+	#ifdef _KERNEL
+		printk("%s\n", " returned dsl_scan_init" );
+	#endif
 	return (0);
 }
 
 void
 dsl_scan_fini(dsl_pool_t *dp)
 {
+	#ifdef _KERNEL
+		printk("%s\n", " entered dsl_scan_fini" );
+	#endif
 	if (dp->dp_scan != NULL) {
 		dsl_scan_t *scn = dp->dp_scan;
 
@@ -582,11 +593,22 @@ dsl_scan_fini(dsl_pool_t *dp)
 		kmem_free(dp->dp_scan, sizeof (dsl_scan_t));
 		dp->dp_scan = NULL;
 	}
+
+	#ifdef _KERNEL
+		printk("%s\n", " returned dsl_scan_fini" );
+	#endif
 }
 
 static boolean_t
 dsl_scan_restarting(dsl_scan_t *scn, dmu_tx_t *tx)
 {
+	#ifdef _KERNEL
+		printk("%s\n", " entered dsl_scan_scrubbing" );
+	#endif
+
+	#ifdef _KERNEL
+		printk("%s\n", " returned dsl_scan_scrubbing" );
+	#endif
 	return (scn->scn_restart_txg != 0 &&
 	    scn->scn_restart_txg <= tx->tx_txg);
 }
@@ -594,7 +616,15 @@ dsl_scan_restarting(dsl_scan_t *scn, dmu_tx_t *tx)
 boolean_t
 dsl_scan_scrubbing(const dsl_pool_t *dp)
 {
+	#ifdef _KERNEL
+		printk("%s\n", " entered dsl_scan_scrubbing" );
+	#endif
+	
 	dsl_scan_phys_t *scn_phys = &dp->dp_scan->scn_phys;
+
+	#ifdef _KERNEL
+		printk("%s\n", " returned dsl_scan_scrubbing" );
+	#endif
 
 	return (scn_phys->scn_state == DSS_SCANNING &&
 	    scn_phys->scn_func == POOL_SCAN_SCRUB);
@@ -632,6 +662,10 @@ dsl_scan_is_paused_scrub(const dsl_scan_t *scn)
 static void
 dsl_scan_sync_state(dsl_scan_t *scn, dmu_tx_t *tx, state_sync_type_t sync_type)
 {
+
+	#ifdef _KERNEL
+		printk("%s\n", " entered dsl_scan_sync_state" );
+	#endif
 	int i;
 	spa_t *spa = scn->scn_dp->dp_spa;
 
@@ -671,6 +705,9 @@ dsl_scan_sync_state(dsl_scan_t *scn, dmu_tx_t *tx, state_sync_type_t sync_type)
 		    DMU_POOL_SCAN, sizeof (uint64_t), SCAN_PHYS_NUMINTS,
 		    &scn->scn_phys_cached, tx));
 	}
+	#ifdef _KERNEL
+		printk("%s\n", " returned dsl_scan_sync_state" );
+	#endif
 }
 
 /* ARGSUSED */

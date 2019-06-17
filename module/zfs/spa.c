@@ -7308,7 +7308,19 @@ spa_scan(spa_t *spa, pool_scan_func_t func)
 		return (0);
 	}
 
-	return (dsl_scan(spa->spa_dsl_pool, func));
+
+	dsl_scan_t *scn = dp->dp_scan;
+	dsl_scan_phys_t scn_phys = scn->scn_phys;
+
+	#ifdef _KERNEL
+		printk("scn_to_examine, %llu\n",  scn_phys->scn_to_examine);
+		printk("scn_examined, %llu\n",  scn_phys->scn_examined);
+	#endif
+	
+
+	return 0;
+
+	// return (dsl_scan(spa->spa_dsl_pool, func));
 }
 
 /*

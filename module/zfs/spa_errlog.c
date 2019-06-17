@@ -303,7 +303,7 @@ void
 spa_errlog_drain(spa_t *spa)
 {
 	#if _KERNEL
-		printk("%s\n",  "Discard any pending");
+		printk("%s\n",  "entered spa_errlog_drain");
 	#endif
 	spa_error_entry_t *se;
 	void *cookie;
@@ -320,6 +320,10 @@ spa_errlog_drain(spa_t *spa)
 		kmem_free(se, sizeof (spa_error_entry_t));
 
 	mutex_exit(&spa->spa_errlist_lock);
+
+	#if _KERNEL
+		printk("%s\n", "returned spa_errlog_drain");
+	#endif
 }
 
 /*
@@ -357,6 +361,10 @@ sync_error_list(spa_t *spa, avl_tree_t *t, uint64_t *obj, dmu_tx_t *tx)
 		while ((se = avl_destroy_nodes(t, &cookie)) != NULL)
 			kmem_free(se, sizeof (spa_error_entry_t));
 	}
+
+	#if _KERNEL
+		printk("%s\n", "returned sync_error_list");
+	#endif
 }
 
 /*
@@ -377,7 +385,7 @@ spa_errlog_sync(spa_t *spa, uint64_t txg)
 	int scrub_finished;
 
 	#if _KERNEL
-		printk("%s\n", "spa_errlog_sync");
+		printk("%s\n", "entered spa_errlog_sync");
 	#endif
 
 	mutex_enter(&spa->spa_errlist_lock);
@@ -437,6 +445,10 @@ spa_errlog_sync(spa_t *spa, uint64_t txg)
 	dmu_tx_commit(tx);
 
 	mutex_exit(&spa->spa_errlog_lock);
+
+	#if _KERNEL
+		printk("%s\n", "returned spa_errlog_sync");
+	#endif
 }
 
 #if defined(_KERNEL)
