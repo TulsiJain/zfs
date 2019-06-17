@@ -677,15 +677,10 @@ dsl_scan_sync_state(dsl_scan_t *scn, dmu_tx_t *tx, state_sync_type_t sync_type)
 static int
 dsl_scan_setup_check(void *arg, dmu_tx_t *tx)
 {
-	#ifdef _KERNEL
-		printk("%s\n", "dsl_scan_setup_check entered" );
 	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 
 	if (dsl_scan_is_running(scn))
 		return (SET_ERROR(EBUSY));
-
-	#ifdef _KERNEL
-		printk("%s\n", "dsl_scan_setup_check returned" );
 
 	return (0);
 }
