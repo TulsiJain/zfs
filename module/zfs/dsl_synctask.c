@@ -74,7 +74,7 @@ top:
 
 	dsl_pool_config_enter(dp, FTAG);
 	#ifdef _KERNEL
-		printk("%s\n", "about to called  check function");
+		printk("%s\n", "about to called  check function" );
 	#endif
 	err = dst.dst_checkfunc(arg, tx);
 
