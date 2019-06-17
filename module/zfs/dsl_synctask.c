@@ -78,8 +78,16 @@ top:
 	#endif
 
 	dsl_pool_config_enter(dp, FTAG);
+
+	#ifdef _KERNEL
+		printk("%s\n", "do not know 1" );
+	#endif
 	err = dst.dst_checkfunc(arg, tx);
 	dsl_pool_config_exit(dp, FTAG);
+
+	#ifdef _KERNEL
+		printk("%s\n", "do not know 2" );
+	#endif
 
 	if (err != 0) {
 		dmu_tx_commit(tx);
@@ -89,16 +97,34 @@ top:
 
 	txg_list_t *task_list = (early) ?
 	    &dp->dp_early_sync_tasks : &dp->dp_sync_tasks;
+	
+	#ifdef _KERNEL
+		printk("%s\n", "do not know 3" );
+	#endif
 	VERIFY(txg_list_add_tail(task_list, &dst, dst.dst_txg));
 
+	#ifdef _KERNEL
+		printk("%s\n", "do not know 4" );
+	#endif
 	dmu_tx_commit(tx);
 
+	#ifdef _KERNEL
+		printk("%s\n", "do not know 5" );
+	#endif
+
 	txg_wait_synced(dp, dst.dst_txg);
+
+	#ifdef _KERNEL
+		printk("%s\n", "do not know 6" );
+	#endif
 
 	if (dst.dst_error == EAGAIN) {
 		txg_wait_synced(dp, dst.dst_txg + TXG_DEFER_SIZE);
 		goto top;
 	}
+	#ifdef _KERNEL
+		printk("%s\n", "do not know 7" );
+	#endif
 
 	spa_close(spa, FTAG);
 	#ifdef _KERNEL
