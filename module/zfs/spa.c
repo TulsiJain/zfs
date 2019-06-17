@@ -7316,13 +7316,11 @@ spa_scan(spa_t *spa, pool_scan_func_t func)
 		printk("scn_end_time, %llu\n",  scn_phys.scn_end_time);
 		printk("scn_to_examine, %llu\n",  scn_phys.scn_to_examine);
 		printk("scn_examined, %llu\n",  scn_phys.scn_examined);
+		printk("scn_errors, %llu\n",  scn_phys.scn_errors.);
 		printk("scn_func, %llu\n",  scn_phys.scn_func);
 	#endif
-	
 
-	return 0;
-
-	// return (dsl_scan(spa->spa_dsl_pool, func));
+	return (dsl_scan(spa->spa_dsl_pool, func));
 }
 
 /*
