@@ -426,7 +426,6 @@ int
 dsl_scan_init(dsl_pool_t *dp, uint64_t txg)
 {
 	#ifdef _KERNEL
-
 		printk("%s\n", " entered dsl_scan_init" );
 	#endif
 
@@ -569,7 +568,7 @@ dsl_scan_init(dsl_pool_t *dp, uint64_t txg)
 	spa_scan_stat_init(spa);
 
 	#ifdef _KERNEL
-		printk("%s\n", " returned dsl_scan_init" );
+		printk("%s\n", "returned dsl_scan_init" );
 	#endif
 	return (0);
 }
@@ -590,13 +589,12 @@ dsl_scan_fini(dsl_pool_t *dp)
 		avl_destroy(&scn->scn_queue);
 		scan_ds_prefetch_queue_clear(scn);
 		avl_destroy(&scn->scn_prefetch_queue);
-
 		kmem_free(dp->dp_scan, sizeof (dsl_scan_t));
 		dp->dp_scan = NULL;
 	}
 
 	#ifdef _KERNEL
-		printk("%s\n", " returned dsl_scan_fini" );
+		printk("%s\n", "returned dsl_scan_fini" );
 	#endif
 }
 
@@ -715,7 +713,7 @@ dsl_scan_sync_state(dsl_scan_t *scn, dmu_tx_t *tx, state_sync_type_t sync_type)
 		    &scn->scn_phys_cached, tx));
 	}
 	#ifdef _KERNEL
-		printk("%s\n", " returned dsl_scan_sync_state" );
+		printk("%s\n", "returned dsl_scan_sync_state" );
 	#endif
 }
 
@@ -725,14 +723,14 @@ dsl_scan_setup_check(void *arg, dmu_tx_t *tx)
 {
 	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 	#ifdef _KERNEL
-		printk("%s\n", " entered dsl_scan_setup_check" );
+		printk("%s\n", "entered dsl_scan_setup_check" );
 	#endif
 
 	if (dsl_scan_is_running(scn))
 		return (SET_ERROR(EBUSY));
 
 	#ifdef _KERNEL
-		printk("%s\n", " returned dsl_scan_setup_check" );
+		printk("%s\n", "returned dsl_scan_setup_check" );
 	#endif
 	return (0);
 }
@@ -913,6 +911,10 @@ dsl_scan_clear_deferred(vdev_t *vd, dmu_tx_t *tx)
 static void
 dsl_scan_done(dsl_scan_t *scn, boolean_t complete, dmu_tx_t *tx)
 {
+
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_done");
+	#endif
 	static const char *old_names[] = {
 		"scrub_bookmark",
 		"scrub_ddt_bookmark",
@@ -1036,6 +1038,10 @@ dsl_scan_done(dsl_scan_t *scn, boolean_t complete, dmu_tx_t *tx)
 		spa->spa_errata = 0;
 
 	ASSERT(!dsl_scan_is_running(scn));
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_done");
+	#endif
 }
 
 /* ARGSUSED */
