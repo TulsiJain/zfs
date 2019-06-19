@@ -3516,7 +3516,7 @@ void
 dsl_scan_sync(dsl_pool_t *dp, dmu_tx_t *tx)
 {
 	#if _KERNEL
-		printk("%s\n" "entered dsl_scan_sync");
+		printk("%s\n" ,"entered dsl_scan_sync");
 	#endif
 	int err = 0;
 	dsl_scan_t *scn = dp->dp_scan;
