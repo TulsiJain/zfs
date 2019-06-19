@@ -1048,10 +1048,17 @@ dsl_scan_done(dsl_scan_t *scn, boolean_t complete, dmu_tx_t *tx)
 static int
 dsl_scan_cancel_check(void *arg, dmu_tx_t *tx)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_cancel_check");
+	#endif
 	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 
 	if (!dsl_scan_is_running(scn))
 		return (SET_ERROR(ENOENT));
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_cancel_check");
+	#endif
 	return (0);
 }
 
@@ -1059,11 +1066,18 @@ dsl_scan_cancel_check(void *arg, dmu_tx_t *tx)
 static void
 dsl_scan_cancel_sync(void *arg, dmu_tx_t *tx)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_cancel_sync");
+	#endif
 	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 
 	dsl_scan_done(scn, B_FALSE, tx);
 	dsl_scan_sync_state(scn, tx, SYNC_MANDATORY);
 	spa_event_notify(scn->scn_dp->dp_spa, NULL, NULL, ESC_ZFS_SCRUB_ABORT);
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_cancel_sync");
+	#endif
 }
 
 int
@@ -1501,6 +1515,9 @@ dsl_scan_zil(dsl_pool_t *dp, zil_header_t *zh)
 static int
 scan_prefetch_queue_compare(const void *a, const void *b)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered scan_prefetch_queue_compare");
+	#endif
 	const scan_prefetch_issue_ctx_t *spic_a = a, *spic_b = b;
 	const scan_prefetch_ctx_t *spc_a = spic_a->spic_spc;
 	const scan_prefetch_ctx_t *spc_b = spic_b->spic_spc;
@@ -1508,21 +1525,34 @@ scan_prefetch_queue_compare(const void *a, const void *b)
 	return (zbookmark_compare(spc_a->spc_datablkszsec,
 	    spc_a->spc_indblkshift, spc_b->spc_datablkszsec,
 	    spc_b->spc_indblkshift, &spic_a->spic_zb, &spic_b->spic_zb));
+	#ifdef _KERNEL
+		printk("%s\n", "returned scan_prefetch_queue_compare");
+	#endif
 }
 
 static void
 scan_prefetch_ctx_rele(scan_prefetch_ctx_t *spc, void *tag)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered scan_prefetch_ctx_rele");
+	#endif
 	if (zfs_refcount_remove(&spc->spc_refcnt, tag) == 0) {
 		zfs_refcount_destroy(&spc->spc_refcnt);
 		kmem_free(spc, sizeof (scan_prefetch_ctx_t));
 	}
+	#ifdef _KERNEL
+		printk("%s\n", "returned scan_prefetch_ctx_rele");
+	#endif
 }
 
 static scan_prefetch_ctx_t *
 scan_prefetch_ctx_create(dsl_scan_t *scn, dnode_phys_t *dnp, void *tag)
 {
 	scan_prefetch_ctx_t *spc;
+
+	#ifdef _KERNEL
+		printk("%s\n", "entered scan_prefetch_ctx_create");
+	#endif
 
 	spc = kmem_alloc(sizeof (scan_prefetch_ctx_t), KM_SLEEP);
 	zfs_refcount_create(&spc->spc_refcnt);
@@ -1537,6 +1567,12 @@ scan_prefetch_ctx_create(dsl_scan_t *scn, dnode_phys_t *dnp, void *tag)
 		spc->spc_indblkshift = 0;
 		spc->spc_root = B_TRUE;
 	}
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned scan_prefetch_ctx_create");
+	#endif
+
+
 
 	return (spc);
 }
@@ -1567,6 +1603,9 @@ static boolean_t
 dsl_scan_check_prefetch_resume(scan_prefetch_ctx_t *spc,
     const zbookmark_phys_t *zb)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_check_prefetch_resume");
+	#endif
 	zbookmark_phys_t *last_zb = &spc->spc_scn->scn_prefetch_bookmark;
 	dnode_phys_t tmp_dnp;
 	dnode_phys_t *dnp = (spc->spc_root) ? NULL : &tmp_dnp;
@@ -1582,12 +1621,19 @@ dsl_scan_check_prefetch_resume(scan_prefetch_ctx_t *spc,
 	if (zbookmark_subtree_completed(dnp, zb, last_zb))
 		return (B_TRUE);
 
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_check_prefetch_resume");
+	#endif
+
 	return (B_FALSE);
 }
 
 static void
 dsl_scan_prefetch(scan_prefetch_ctx_t *spc, blkptr_t *bp, zbookmark_phys_t *zb)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_prefetch");
+	#endif
 	avl_index_t idx;
 	dsl_scan_t *scn = spc->spc_scn;
 	spa_t *spa = scn->scn_dp->dp_spa;
@@ -1627,12 +1673,19 @@ dsl_scan_prefetch(scan_prefetch_ctx_t *spc, blkptr_t *bp, zbookmark_phys_t *zb)
 	avl_insert(&scn->scn_prefetch_queue, spic, idx);
 	cv_broadcast(&spa->spa_scrub_io_cv);
 	mutex_exit(&spa->spa_scrub_lock);
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_prefetch");
+	#endif
 }
 
 static void
 dsl_scan_prefetch_dnode(dsl_scan_t *scn, dnode_phys_t *dnp,
     uint64_t objset, uint64_t object)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_prefetch_dnode");
+	#endif
 	int i;
 	zbookmark_phys_t zb;
 	scan_prefetch_ctx_t *spc;
@@ -1657,12 +1710,18 @@ dsl_scan_prefetch_dnode(dsl_scan_t *scn, dnode_phys_t *dnp,
 	}
 
 	scan_prefetch_ctx_rele(spc, FTAG);
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_prefetch_dnode");
+	#endif
 }
 
 void
 dsl_scan_prefetch_cb(zio_t *zio, const zbookmark_phys_t *zb, const blkptr_t *bp,
     arc_buf_t *buf, void *private)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_prefetch_cb");
+	#endif
 	scan_prefetch_ctx_t *spc = private;
 	dsl_scan_t *scn = spc->spc_scn;
 	spa_t *spa = scn->scn_dp->dp_spa;
@@ -1720,6 +1779,9 @@ out:
 	if (buf != NULL)
 		arc_buf_destroy(buf, private);
 	scan_prefetch_ctx_rele(spc, scn);
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_prefetch_cb");
+	#endif
 }
 
 /* ARGSUSED */
@@ -1729,6 +1791,10 @@ dsl_scan_prefetch_thread(void *arg)
 	dsl_scan_t *scn = arg;
 	spa_t *spa = scn->scn_dp->dp_spa;
 	scan_prefetch_issue_ctx_t *spic;
+
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_prefetch_thread");
+	#endif
 
 	/* loop until we are told to stop */
 	while (!scn->scn_prefetch_stop) {
@@ -1787,12 +1853,19 @@ dsl_scan_prefetch_thread(void *arg)
 	}
 	ASSERT0(avl_numnodes(&scn->scn_prefetch_queue));
 	mutex_exit(&spa->spa_scrub_lock);
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_prefetch_thread");
+	#endif
 }
 
 static boolean_t
 dsl_scan_check_resume(dsl_scan_t *scn, const dnode_phys_t *dnp,
     const zbookmark_phys_t *zb)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_check_resume");
+	#endif
 	/*
 	 * We never skip over user/group accounting objects (obj<0)
 	 */
@@ -1822,6 +1895,10 @@ dsl_scan_check_resume(dsl_scan_t *scn, const dnode_phys_t *dnp,
 			bzero(&scn->scn_phys.scn_bookmark, sizeof (*zb));
 		}
 	}
+
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_check_resume");
+	#endif
 	return (B_FALSE);
 }
 
@@ -1841,6 +1918,9 @@ dsl_scan_recurse(dsl_scan_t *scn, dsl_dataset_t *ds, dmu_objset_type_t ostype,
     dnode_phys_t *dnp, const blkptr_t *bp,
     const zbookmark_phys_t *zb, dmu_tx_t *tx)
 {
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_recurse");
+	#endif
 	dsl_pool_t *dp = scn->scn_dp;
 	int zio_flags = ZIO_FLAG_CANFAIL | ZIO_FLAG_SCAN_THREAD;
 	int err;
@@ -1932,6 +2012,9 @@ dsl_scan_recurse(dsl_scan_t *scn, dsl_dataset_t *ds, dmu_objset_type_t ostype,
 		arc_buf_destroy(buf, &buf);
 	}
 
+	#ifdef _KERNEL
+		printk("%s\n", "returned dsl_scan_recurse");
+	#endif
 	return (0);
 }
 
@@ -3419,7 +3502,6 @@ dsl_process_async_destroys(dsl_pool_t *dp, dmu_tx_t *tx)
 			dsl_pool_destroy_obsolete_bpobj(dp, tx);
 	}
 	return (0);
-}
 
 /*
  * This is the primary entry point for scans that is called from syncing
@@ -3432,6 +3514,9 @@ dsl_process_async_destroys(dsl_pool_t *dp, dmu_tx_t *tx)
 void
 dsl_scan_sync(dsl_pool_t *dp, dmu_tx_t *tx)
 {
+	#if _KERNEL
+		printk("%s\n" "entered dsl_scan_sync");
+	#endif
 	int err = 0;
 	dsl_scan_t *scn = dp->dp_scan;
 	spa_t *spa = dp->dp_spa;
@@ -3698,6 +3783,10 @@ dsl_scan_sync(dsl_pool_t *dp, dmu_tx_t *tx)
 	}
 
 	dsl_scan_sync_state(scn, tx, sync_type);
+
+	#if _KERNEL
+		printk("%s\n" "returned dsl_scan_sync");
+	#endif
 }
 
 static void
