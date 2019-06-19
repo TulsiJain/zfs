@@ -1598,13 +1598,14 @@ scan_ds_prefetch_queue_clear(dsl_scan_t *scn)
 	mutex_exit(&spa->spa_scrub_lock);
 }
 
+// have some doubt does it mean restarting something related to pending scans?
 static boolean_t
 dsl_scan_check_prefetch_resume(scan_prefetch_ctx_t *spc,
     const zbookmark_phys_t *zb)
 {
-	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_scan_check_prefetch_resume");
-	#endif
+	// #ifdef _KERNEL
+	// 	printk("%s\n", "entered dsl_scan_check_prefetch_resume");
+	// #endif
 	zbookmark_phys_t *last_zb = &spc->spc_scn->scn_prefetch_bookmark;
 	dnode_phys_t tmp_dnp;
 	dnode_phys_t *dnp = (spc->spc_root) ? NULL : &tmp_dnp;
@@ -1858,13 +1859,11 @@ dsl_scan_prefetch_thread(void *arg)
 	#endif
 }
 
+// check for pending resume may be?
 static boolean_t
 dsl_scan_check_resume(dsl_scan_t *scn, const dnode_phys_t *dnp,
     const zbookmark_phys_t *zb)
 {
-	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_scan_check_resume");
-	#endif
 	/*
 	 * We never skip over user/group accounting objects (obj<0)
 	 */
@@ -1895,9 +1894,6 @@ dsl_scan_check_resume(dsl_scan_t *scn, const dnode_phys_t *dnp,
 		}
 	}
 
-	#ifdef _KERNEL
-		printk("%s\n", "returned dsl_scan_check_resume");
-	#endif
 	return (B_FALSE);
 }
 
@@ -2012,7 +2008,7 @@ dsl_scan_recurse(dsl_scan_t *scn, dsl_dataset_t *ds, dmu_objset_type_t ostype,
 	}
 
 	#ifdef _KERNEL
-		printk("%s\n", "returned dsl_scan_recurse");
+		printk("%lu %s\n", scn->scn_phys.scn_errors, "returned dsl_scan_recurse");
 	#endif
 
 	return (0);
@@ -2023,6 +2019,9 @@ dsl_scan_visitdnode(dsl_scan_t *scn, dsl_dataset_t *ds,
     dmu_objset_type_t ostype, dnode_phys_t *dnp,
     uint64_t object, dmu_tx_t *tx)
 {
+	#ifdef _KERNEL
+		printk("%s, entered dsl_scan_visitdnode");
+	#endif
 	int j;
 
 	for (j = 0; j < dnp->dn_nblkptr; j++) {
@@ -2041,6 +2040,9 @@ dsl_scan_visitdnode(dsl_scan_t *scn, dsl_dataset_t *ds,
 		dsl_scan_visitbp(DN_SPILL_BLKPTR(dnp),
 		    &czb, dnp, ds, scn, ostype, tx);
 	}
+	#ifdef _KERNEL
+		printk("%s, entered dsl_scan_visitdnode");
+	#endif
 }
 
 /*
@@ -2052,6 +2054,9 @@ dsl_scan_visitbp(blkptr_t *bp, const zbookmark_phys_t *zb,
     dnode_phys_t *dnp, dsl_dataset_t *ds, dsl_scan_t *scn,
     dmu_objset_type_t ostype, dmu_tx_t *tx)
 {
+	#ifdef _KERNEL
+		printk("%s", "entered dsl_scan_visitbp");
+	#endif
 	dsl_pool_t *dp = scn->scn_dp;
 	blkptr_t *bp_toread = NULL;
 
@@ -2117,8 +2122,15 @@ dsl_scan_visitbp(blkptr_t *bp, const zbookmark_phys_t *zb,
 
 	scan_funcs[scn->scn_phys.scn_func](dp, bp, zb);
 
+	#ifdef _KERNEL
+		printk("%s", "returned dsl_scan_visitbp");
+	#endif
+
 out:
 	kmem_free(bp_toread, sizeof (blkptr_t));
+	#ifdef _KERNEL
+		printk("%s", "returned dsl_scan_visitbp");
+	#endif
 }
 
 static void
