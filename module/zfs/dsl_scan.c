@@ -3786,7 +3786,7 @@ dsl_scan_sync(dsl_pool_t *dp, dmu_tx_t *tx)
 	dsl_scan_sync_state(scn, tx, sync_type);
 
 	#if _KERNEL
-		printk("%s\n" "returned dsl_scan_sync");
+		printk("%s\n" ,"returned dsl_scan_sync");
 	#endif
 }
 
