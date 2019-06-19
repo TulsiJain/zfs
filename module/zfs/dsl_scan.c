@@ -615,16 +615,15 @@ dsl_scan_restarting(dsl_scan_t *scn, dmu_tx_t *tx)
 boolean_t
 dsl_scan_scrubbing(const dsl_pool_t *dp)
 {
-	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_scan_scrubbing" );
-	#endif
+	// #ifdef _KERNEL
+	// 	printk("%s\n", "entered dsl_scan_scrubbing" );
+	// #endif
 	
 	dsl_scan_phys_t *scn_phys = &dp->dp_scan->scn_phys;
 
-	#ifdef _KERNEL
-		printk("%s\n", "returned dsl_scan_scrubbing" );
-	#endif
-
+	// #ifdef _KERNEL
+	// 	printk("%s\n", "returned dsl_scan_scrubbing" );
+	// #endif
 	return (scn_phys->scn_state == DSS_SCANNING &&
 	    scn_phys->scn_func == POOL_SCAN_SCRUB);
 }
