@@ -601,13 +601,13 @@ dsl_scan_fini(dsl_pool_t *dp)
 static boolean_t
 dsl_scan_restarting(dsl_scan_t *scn, dmu_tx_t *tx)
 {
-	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_scan_restarting" );
-	#endif
+	// #ifdef _KERNEL
+	// 	printk("%s\n", "entered dsl_scan_restarting" );
+	// #endif
 
-	#ifdef _KERNEL
-		printk("%s\n", "returned dsl_scan_restarting" );
-	#endif
+	// #ifdef _KERNEL
+	// 	printk("%s\n", "returned dsl_scan_restarting" );
+	// #endif
 	return (scn->scn_restart_txg != 0 &&
 	    scn->scn_restart_txg <= tx->tx_txg);
 }
