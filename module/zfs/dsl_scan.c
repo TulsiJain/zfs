@@ -2015,6 +2015,7 @@ dsl_scan_recurse(dsl_scan_t *scn, dsl_dataset_t *ds, dmu_objset_type_t ostype,
 	#ifdef _KERNEL
 		printk("%s\n", "returned dsl_scan_recurse");
 	#endif
+
 	return (0);
 }
 
@@ -3502,7 +3503,7 @@ dsl_process_async_destroys(dsl_pool_t *dp, dmu_tx_t *tx)
 			dsl_pool_destroy_obsolete_bpobj(dp, tx);
 	}
 	return (0);
-
+}
 /*
  * This is the primary entry point for scans that is called from syncing
  * context. Scans must happen entirely during syncing context so that we
