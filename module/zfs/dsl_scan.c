@@ -2008,7 +2008,7 @@ dsl_scan_recurse(dsl_scan_t *scn, dsl_dataset_t *ds, dmu_objset_type_t ostype,
 	}
 
 	#ifdef _KERNEL
-		printk("%lu %s\n", scn->scn_phys.scn_errors, "returned dsl_scan_recurse");
+		printk("%llu %s\n", scn->scn_phys.scn_errors, "returned dsl_scan_recurse");
 	#endif
 
 	return (0);
@@ -2020,7 +2020,7 @@ dsl_scan_visitdnode(dsl_scan_t *scn, dsl_dataset_t *ds,
     uint64_t object, dmu_tx_t *tx)
 {
 	#ifdef _KERNEL
-		printk("%s, entered dsl_scan_visitdnode");
+		printk("%s", "entered dsl_scan_visitdnode");
 	#endif
 	int j;
 
@@ -2041,7 +2041,7 @@ dsl_scan_visitdnode(dsl_scan_t *scn, dsl_dataset_t *ds,
 		    &czb, dnp, ds, scn, ostype, tx);
 	}
 	#ifdef _KERNEL
-		printk("%s, entered dsl_scan_visitdnode");
+		printk("%s", "entered dsl_scan_visitdnode");
 	#endif
 }
 
