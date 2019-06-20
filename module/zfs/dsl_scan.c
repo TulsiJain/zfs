@@ -631,14 +631,6 @@ dsl_scan_scrubbing(const dsl_pool_t *dp)
 boolean_t
 dsl_scan_is_paused_scrub(const dsl_scan_t *scn)
 {
-	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_scan_is_paused_scrub");
-	#endif
-
-	#ifdef _KERNEL
-		printk("%s\n", "returned dsl_scan_is_paused_scrub");
-	#endif
-
 	return (dsl_scan_scrubbing(scn->scn_dp) &&
 	    scn->scn_phys.scn_flags & DSF_SCRUB_PAUSED);
 }
@@ -1620,10 +1612,6 @@ dsl_scan_check_prefetch_resume(scan_prefetch_ctx_t *spc,
 
 	if (zbookmark_subtree_completed(dnp, zb, last_zb))
 		return (B_TRUE);
-
-	#ifdef _KERNEL
-		printk("%s\n", "returned dsl_scan_check_prefetch_resume");
-	#endif
 
 	return (B_FALSE);
 }
@@ -2746,6 +2734,9 @@ dsl_scan_ds_maxtxg(dsl_dataset_t *ds)
 static void
 dsl_scan_visit(dsl_scan_t *scn, dmu_tx_t *tx)
 {
+	#ifdef _KERNEL 
+		printk("%s\n", "entered dsl_scan_visit");
+	#endif
 	scan_ds_t *sds;
 	dsl_pool_t *dp = scn->scn_dp;
 
@@ -2831,12 +2822,19 @@ dsl_scan_visit(dsl_scan_t *scn, dmu_tx_t *tx)
 	/* No more objsets to fetch, we're done */
 	scn->scn_phys.scn_bookmark.zb_objset = ZB_DESTROYED_OBJSET;
 	ASSERT0(scn->scn_suspending);
+
+	#ifdef _KERNEL 
+		printk("%s\n", "returned dsl_scan_visit");
+	#endif
 }
 
 static uint64_t
 dsl_scan_count_leaves(vdev_t *vd)
 {
 	uint64_t i, leaves = 0;
+	#ifdef _KERNEL 
+		printk("%s\n", "entered dsl_scan_count_leaves");
+	#endif
 
 	/* we only count leaves that belong to the main pool and are readable */
 	if (vd->vdev_islog || vd->vdev_isspare ||
@@ -2850,12 +2848,19 @@ dsl_scan_count_leaves(vdev_t *vd)
 		leaves += dsl_scan_count_leaves(vd->vdev_child[i]);
 	}
 
+	#ifdef _KERNEL 
+		printk("%s\n", "returned dsl_scan_count_leaves");
+	#endif
 	return (leaves);
 }
 
 static void
 scan_io_queues_update_zio_stats(dsl_scan_io_queue_t *q, const blkptr_t *bp)
 {
+	#ifdef _KERNEL 
+		printk("%s\n", "entered scan_io_queues_update_zio_stats");
+	#endif
+
 	int i;
 	uint64_t cur_size = 0;
 
@@ -2865,6 +2870,9 @@ scan_io_queues_update_zio_stats(dsl_scan_io_queue_t *q, const blkptr_t *bp)
 
 	q->q_total_zio_size_this_txg += cur_size;
 	q->q_zios_this_txg++;
+	#ifdef _KERNEL 
+		printk("%s\n", "returned scan_io_queues_update_zio_stats");
+	#endif
 }
 
 static void
