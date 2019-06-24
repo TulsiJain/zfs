@@ -871,6 +871,12 @@ dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 
 }
 
+static int
+zbookmark_mem_compare(const void *a, const void *b)
+{
+	return (memcmp(a, b, sizeof (zbookmark_phys_t)));
+}
+
 static void
 dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 {
@@ -922,7 +928,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 		printf("count is %llu\n", (u_longlong_t)count);
 	#endif
 	qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
-	for (i = 0; i < count; i++) {
+	for (int i = 0; i < count; i++) {
 		#ifdef _KERNEL
 			printk("%llu\n", u_longlong_t(zb[i].zb_objset));
 			printk("%llu\n", u_longlong_t(zb[i].zb_object));
