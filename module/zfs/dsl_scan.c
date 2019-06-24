@@ -910,8 +910,12 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 
 	// // printk("SPA opened successfully \n");
 	
-	error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
+	error = spa_get_errlog(spa, (void *)zc->zc_nvlist_dst,
 	    &count);
+
+	#ifdef _KERNEL
+		printk("%d\n", error);
+	#endif
 	
 	// printk("error count is %d\n", error);
 	// printk("count is kernel is %zu\n", count);
