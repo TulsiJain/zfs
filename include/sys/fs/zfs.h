@@ -895,7 +895,6 @@ typedef enum mmp_state {
 typedef enum pool_scan_func {
 	POOL_SCAN_NONE,
 	POOL_SCAN_SCRUB,
-	POOL_SCAN_SCRUB_ERR,
 	POOL_SCAN_RESILVER,
 	POOL_SCAN_FUNCS
 } pool_scan_func_t;
@@ -906,6 +905,7 @@ typedef enum pool_scan_func {
 typedef enum pool_scrub_cmd {
 	POOL_SCRUB_NORMAL = 0,
 	POOL_SCRUB_PAUSE,
+	POOL_SCAN_SCRUB_ERR,
 	POOL_SCRUB_FLAGS_END
 } pool_scrub_cmd_t;
 

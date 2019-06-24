@@ -3608,9 +3608,9 @@ dsl_process_async_destroys(dsl_pool_t *dp, dmu_tx_t *tx)
 void
 dsl_scan_sync(dsl_pool_t *dp, dmu_tx_t *tx)
 {
-	#if _KERNEL
-		printk("%s\n" ,"entered dsl_scan_sync");
-	#endif
+	// #if _KERNEL
+	// 	printk("%s\n" ,"entered dsl_scan_sync");
+	// #endif
 	int err = 0;
 	dsl_scan_t *scn = dp->dp_scan;
 	spa_t *spa = dp->dp_spa;
@@ -3878,9 +3878,9 @@ dsl_scan_sync(dsl_pool_t *dp, dmu_tx_t *tx)
 
 	dsl_scan_sync_state(scn, tx, sync_type);
 
-	#if _KERNEL
-		printk("%s\n" ,"returned dsl_scan_sync");
-	#endif
+	// #if _KERNEL
+	// 	printk("%s\n" ,"returned dsl_scan_sync");
+	// #endif
 }
 
 static void
