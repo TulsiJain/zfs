@@ -867,19 +867,75 @@ dsl_scan_err(dsl_pool_t *dp)
 	dsl_scan_t *scn = dp->dp_scan;
 
 	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_scan");
+		printk("%s\n", "entered dsl_scan_err");
 	#endif
-		
+
 	spa_vdev_state_enter(spa, SCL_NONE);
 	spa->spa_scrub_reopen = B_TRUE;
 	vdev_reopen(spa->spa_root_vdev);
 	spa->spa_scrub_reopen = B_FALSE;
 	(void) spa_vdev_state_exit(spa, NULL, 0);
 
-
-	return (dsl_sync_task(spa_name(spa), dsl_scan_setup_check,
-	    dsl_scan_setup_sync, &func, 0, ZFS_SPACE_CHECK_EXTRA_RESERVED));
+	return (dsl_sync_task(spa_name(dp->dp_spa),
+	    dsl_scrub_err_check, dsl_scrub_err_sync, NULL, 3,
+	    ZFS_SPACE_CHECK_RESERVED));
 }
+
+static int
+dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
+{
+	pool_scrub_cmd_t *cmd = arg;
+	dsl_pool_t *dp = dmu_tx_pool(tx);
+	dsl_scan_t *scn = dp->dp_scan;
+
+	// if (*cmd == POOL_SCRUB_PAUSE) {
+	// 	/* can't pause a scrub when there is no in-progress scrub */
+	// 	if (!dsl_scan_scrubbing(dp))
+	// 		return (SET_ERROR(ENOENT));
+
+	// 	/* can't pause a paused scrub */
+	// 	if (dsl_scan_is_paused_scrub(scn))
+	// 		return (SET_ERROR(EBUSY));
+	// } else if (*cmd != POOL_SCRUB_NORMAL) {
+	// 	return (SET_ERROR(ENOTSUP));
+	// }
+
+	return (0);
+}
+
+static void
+dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
+{
+	pool_scrub_cmd_t *cmd = arg;
+	dsl_pool_t *dp = dmu_tx_pool(tx);
+	spa_t *spa = dp->dp_spa;
+	dsl_scan_t *scn = dp->dp_scan;
+
+	// if (*cmd == POOL_SCRUB_PAUSE) {
+	// 	/* can't pause a scrub when there is no in-progress scrub */
+	// 	spa->spa_scan_pass_scrub_pause = gethrestime_sec();
+	// 	scn->scn_phys.scn_flags |= DSF_SCRUB_PAUSED;
+	// 	scn->scn_phys_cached.scn_flags |= DSF_SCRUB_PAUSED;
+	// 	dsl_scan_sync_state(scn, tx, SYNC_CACHED);
+	// 	spa_event_notify(spa, NULL, NULL, ESC_ZFS_SCRUB_PAUSED);
+	// } else {
+	// 	ASSERT3U(*cmd, ==, POOL_SCRUB_NORMAL);
+	// 	if (dsl_scan_is_paused_scrub(scn)) {
+	// 		/*
+	// 		 * We need to keep track of how much time we spend
+	// 		 * paused per pass so that we can adjust the scrub rate
+	// 		 * shown in the output of 'zpool status'
+	// 		 */
+	// 		spa->spa_scan_pass_scrub_spent_paused +=
+	// 		    gethrestime_sec() - spa->spa_scan_pass_scrub_pause;
+	// 		spa->spa_scan_pass_scrub_pause = 0;
+	// 		scn->scn_phys.scn_flags &= ~DSF_SCRUB_PAUSED;
+	// 		scn->scn_phys_cached.scn_flags &= ~DSF_SCRUB_PAUSED;
+	// 		dsl_scan_sync_state(scn, tx, SYNC_CACHED);
+	// 	}
+	// }
+}
+
 
 /*
  * Sets the resilver defer flag to B_FALSE on all leaf devs under vd. Returns
