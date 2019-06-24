@@ -890,7 +890,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	// zbookmark_phys_t *zb = NULL;
 
 	// spa_t *spa;
-	int error;
+	// int error;
 	
 	// char name[] = "phase1";
 	// if ((error = spa_open(name, &spa, FTAG)) != 0)
@@ -1012,23 +1012,23 @@ dsl_scan_err(dsl_pool_t *dp)
 	// spa->spa_scrub_reopen = B_FALSE;
 	// (void) spa_vdev_state_exit(spa, NULL, 0);
 
-	if (func == POOL_SCAN_RESILVER) {
-		dsl_resilver_restart(spa->spa_dsl_pool, 0);
-		return (0);
-	}
+	// if (func == POOL_SCAN_RESILVER) {
+	// 	dsl_resilver_restart(spa->spa_dsl_pool, 0);
+	// 	return (0);
+	// }
 
-	if (func == POOL_SCAN_SCRUB && dsl_scan_is_paused_scrub(scn)) {
+	// if (func == POOL_SCAN_SCRUB && dsl_scan_is_paused_scrub(scn)) {
 
-		/* got scrub start cmd, resume paused scrub */
-		int err = dsl_scrub_set_pause_resume(scn->scn_dp,
-		    POOL_SCRUB_NORMAL);
-		if (err == 0) {
-			spa_event_notify(spa, NULL, NULL, ESC_ZFS_SCRUB_RESUME);
-			return (ECANCELED);
-		}
+	// 	/* got scrub start cmd, resume paused scrub */
+	// 	int err = dsl_scrub_set_pause_resume(scn->scn_dp,
+	// 	    POOL_SCRUB_NORMAL);
+	// 	if (err == 0) {
+	// 		spa_event_notify(spa, NULL, NULL, ESC_ZFS_SCRUB_RESUME);
+	// 		return (ECANCELED);
+	// 	}
 
-		return (SET_ERROR(err));
-	}
+	// 	return (SET_ERROR(err));
+	// }
 
 	return (dsl_sync_task(spa_name(dp->dp_spa),
 	    dsl_scrub_err_check, dsl_scrub_err_sync, NULL, 3,
