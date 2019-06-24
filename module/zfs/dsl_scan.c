@@ -859,28 +859,6 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 	    dsl_scan_setup_sync, &func, 0, ZFS_SPACE_CHECK_EXTRA_RESERVED));
 }
 
-
-int
-dsl_scan_err(dsl_pool_t *dp)
-{
-	spa_t *spa = dp->dp_spa;
-	dsl_scan_t *scn = dp->dp_scan;
-
-	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_scan_err");
-	#endif
-
-	spa_vdev_state_enter(spa, SCL_NONE);
-	spa->spa_scrub_reopen = B_TRUE;
-	vdev_reopen(spa->spa_root_vdev);
-	spa->spa_scrub_reopen = B_FALSE;
-	(void) spa_vdev_state_exit(spa, NULL, 0);
-
-	return (dsl_sync_task(spa_name(dp->dp_spa),
-	    dsl_scrub_err_check, dsl_scrub_err_sync, NULL, 3,
-	    ZFS_SPACE_CHECK_RESERVED));
-}
-
 static int
 dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 {
@@ -934,6 +912,28 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	// 		dsl_scan_sync_state(scn, tx, SYNC_CACHED);
 	// 	}
 	// }
+}
+
+
+int
+dsl_scan_err(dsl_pool_t *dp)
+{
+	spa_t *spa = dp->dp_spa;
+	dsl_scan_t *scn = dp->dp_scan;
+
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan_err");
+	#endif
+
+	spa_vdev_state_enter(spa, SCL_NONE);
+	spa->spa_scrub_reopen = B_TRUE;
+	vdev_reopen(spa->spa_root_vdev);
+	spa->spa_scrub_reopen = B_FALSE;
+	(void) spa_vdev_state_exit(spa, NULL, 0);
+
+	return (dsl_sync_task(spa_name(dp->dp_spa),
+	    dsl_scrub_err_check, dsl_scrub_err_sync, NULL, 3,
+	    ZFS_SPACE_CHECK_RESERVED));
 }
 
 
