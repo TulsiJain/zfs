@@ -6699,7 +6699,8 @@ scrub_callback(zpool_handle_t *zhp, void *data)
 	printf("scrub_callback err %d\n", err);
 
 	if (err == 0 && zpool_has_checkpoint(zhp) &&
-	    cb->cb_type == POOL_SCAN_SCRUB) {
+	    (cb->cb_type == POOL_SCAN_SCRUB || cb->cb_type ==
+	    POOL_SCAN_SCRUB_ERR)) {
 		(void) printf(gettext("warning: will not scrub state that "
 		    "belongs to the checkpoint of pool '%s'\n"),
 		    zpool_get_name(zhp));
@@ -6733,6 +6734,9 @@ zpool_do_scrub(int argc, char **argv)
 		case 'p':
 			cb.cb_scrub_cmd = POOL_SCRUB_PAUSE;
 			break;
+		case 'e':
+			cb.cb_scrub_cmd = POOL_SCAN_SCRUB_ERR;
+			break;
 		case '?':
 			(void) fprintf(stderr, gettext("invalid option '%c'\n"),
 			    optopt);
@@ -6754,6 +6758,10 @@ zpool_do_scrub(int argc, char **argv)
 
 	if (cb.cb_type == POOL_SCAN_SCRUB){
 		printf("%s\n", "POOL_SCAN_SCRUB");
+	}
+
+	if (cb.cb_type == POOL_SCAN_SCRUB_ERR){
+		printf("%s\n", "POOL_SCAN_SCRUB_ERR");
 	}
 
 	if (argc < 1) {

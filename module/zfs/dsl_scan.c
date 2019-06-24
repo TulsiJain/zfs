@@ -855,12 +855,64 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 		return (SET_ERROR(err));
 	}
 
-	#ifdef _KERNEL
-		printk("%s\n", "returned dsl_scan");
-	#endif
-
 	return (dsl_sync_task(spa_name(spa), dsl_scan_setup_check,
 	    dsl_scan_setup_sync, &func, 0, ZFS_SPACE_CHECK_EXTRA_RESERVED));
+}
+
+
+int
+dsl_scan_err(dsl_pool_t *dp)
+{
+	spa_t *spa = dp->dp_spa;
+	dsl_scan_t *scn = dp->dp_scan;
+
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scan");
+	#endif
+
+	/*
+	 * Purge all vdev caches and probe all devices.  We do this here
+	 * rather than in sync context because this requires a writer lock
+	 * on the spa_config lock, which we can't do from sync context.  The
+	 * spa_scrub_reopen flag indicates that vdev_open() should not
+	 * attempt to start another scrub.
+	 */
+	spa_vdev_state_enter(spa, SCL_NONE);
+	spa->spa_scrub_reopen = B_TRUE;
+	vdev_reopen(spa->spa_root_vdev);
+	spa->spa_scrub_reopen = B_FALSE;
+	(void) spa_vdev_state_exit(spa, NULL, 0);
+
+	if (func == POOL_SCAN_RESILVER) {
+		dsl_resilver_restart(spa->spa_dsl_pool, 0);
+		return (0);
+	}
+
+	if (func == POOL_SCAN_SCRUB && dsl_scan_is_paused_scrub(scn)) {
+
+		/* got scrub start cmd, resume paused scrub */
+		int err = dsl_scrub_set_pause_resume(scn->scn_dp,
+		    POOL_SCRUB_NORMAL);
+		if (err == 0) {
+			spa_event_notify(spa, NULL, NULL, ESC_ZFS_SCRUB_RESUME);
+			return (ECANCELED);
+		}
+
+		return (SET_ERROR(err));
+	}
+
+	
+
+	if (func == POOL_SCAN_SCRUB_ERR){
+		#ifdef _KERNEL
+			printk("%s\n", "only error blocks reading dsl_scan");
+		#endif
+		return (dsl_sync_task(spa_name(spa), dsl_scan_setup_check,
+		    dsl_scan_setup_sync, &func, 0, ZFS_SPACE_CHECK_EXTRA_RESERVED));
+	}else{
+		return (dsl_sync_task(spa_name(spa), dsl_scan_setup_check,
+		    dsl_scan_setup_sync, &func, 0, ZFS_SPACE_CHECK_EXTRA_RESERVED));
+	}
 }
 
 /*

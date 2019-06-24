@@ -164,6 +164,7 @@ void dsl_scan_fini(struct dsl_pool *dp);
 void dsl_scan_sync(struct dsl_pool *, dmu_tx_t *);
 int dsl_scan_cancel(struct dsl_pool *);
 int dsl_scan(struct dsl_pool *, pool_scan_func_t);
+int dsl_scan_err(struct dsl_pool *);
 boolean_t dsl_scan_scrubbing(const struct dsl_pool *dp);
 int dsl_scrub_set_pause_resume(const struct dsl_pool *dp, pool_scrub_cmd_t cmd);
 void dsl_resilver_restart(struct dsl_pool *, uint64_t txg);

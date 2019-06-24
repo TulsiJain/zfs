@@ -7323,6 +7323,49 @@ spa_scan(spa_t *spa, pool_scan_func_t func)
 	return (dsl_scan(spa->spa_dsl_pool, func));
 }
 
+int
+spa_scan_err(spa_t *spa)
+{
+	ASSERT(spa_config_held(spa, SCL_ALL, RW_WRITER) == 0);
+
+	#ifdef _KERNEL
+		printk("%s\n", "spa_scan entered" );
+	#endif
+
+	if (func >= POOL_SCAN_FUNCS || func == POOL_SCAN_NONE){
+		return (SET_ERROR(ENOTSUP));
+	}
+
+	if (func == POOL_SCAN_RESILVER &&
+	    !spa_feature_is_enabled(spa, SPA_FEATURE_RESILVER_DEFER)){
+		return (SET_ERROR(ENOTSUP));
+	}
+		
+	/*
+	 * If a resilver was requested, but there is no DTL on a
+	 * writeable leaf device, we have nothing to do.
+	 */
+	if (func == POOL_SCAN_RESILVER &&
+	    !vdev_resilver_needed(spa->spa_root_vdev, NULL, NULL)) {
+		spa_async_request(spa, SPA_ASYNC_RESILVER_DONE);
+		return (0);
+	}
+
+	#ifdef _KERNEL
+		dsl_pool_t *dp = spa->spa_dsl_pool;
+		dsl_scan_t *scn = dp->dp_scan;
+		dsl_scan_phys_t scn_phys = scn->scn_phys;
+		printk("scn_start_time, %llu\n",  scn_phys.scn_start_time);
+		printk("scn_end_time, %llu\n",  scn_phys.scn_end_time);
+		printk("scn_to_examine, %llu\n",  scn_phys.scn_to_examine);
+		printk("scn_examined, %llu\n",  scn_phys.scn_examined);
+		printk("scn_errors, %llu\n",  scn_phys.scn_errors);
+		printk("scn_func, %llu\n",  scn_phys.scn_func);
+	#endif
+
+	return (dsl_scan(spa->spa_dsl_pool, func));
+}
+
 /*
  * ==========================================================================
  * SPA async task processing
