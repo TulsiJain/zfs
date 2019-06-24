@@ -884,10 +884,10 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 
 	// zpool_handle_t *zhp = arg;
 
-	zfs_cmd_t zc = {"\0"};
+	// zfs_cmd_t zc = {"\0"};
 	
 	// uint64_t count;
-	zbookmark_phys_t *zb = NULL;
+	// zbookmark_phys_t *zb = NULL;
 
 	// spa_t *spa;
 	int error;
@@ -896,6 +896,11 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	// if ((error = spa_open(name, &spa, FTAG)) != 0)
 	// 	return (error);
 	size_t count = spa_get_errlog_size(spa);
+
+	#ifdef _KERNEL
+		printk("%d\n", count);
+	#endif
+
 
 	// zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
 	//     count * sizeof (zbookmark_phys_t));
