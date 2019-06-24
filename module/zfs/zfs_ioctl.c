@@ -1755,15 +1755,15 @@ zfs_ioc_pool_scan(zfs_cmd_t *zc)
 	if (zc->zc_flags == POOL_SCRUB_PAUSE){
 		printk("%s\n", "entered POOL_SCRUB_PAUSE else");
 		error = spa_scrub_pause_resume(spa, POOL_SCRUB_PAUSE);
+	}else if (zc->zc_flags == POOL_SCAN_SCRUB_ERR){
+		printk("%s\n", "entered POOL_SCAN_SCRUB_ERR else");
+		error = spa_scan_err(spa);
 	}
 	else if (zc->zc_cookie == POOL_SCAN_NONE){
 		printk("%s\n", "entered POOL_SCAN_NONE else");
 		error = spa_scan_stop(spa);
 	}
-	else if (zc->zc_cookie == POOL_SCAN_SCRUB_ERR){
-		printk("%s\n", "entered POOL_SCAN_SCRUB_ERR else");
-		error = spa_scan_err(spa);
-	}else{
+	else{
 		printk("%s\n", "This is expected dude");
 		error = spa_scan(spa, zc->zc_cookie);
 	}
