@@ -999,7 +999,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 int
 dsl_scan_err(dsl_pool_t *dp)
 {
-	spa_t *spa = dp->dp_spa;
+	// spa_t *spa = dp->dp_spa;
 
 	#ifdef _KERNEL
 		printk("%s\n", "entered dsl_scan_err");
