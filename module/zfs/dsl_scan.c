@@ -1215,8 +1215,7 @@ dsl_scrub_set_pause_resume(const dsl_pool_t *dp, pool_scrub_cmd_t cmd)
 {
 	return (dsl_sync_task(spa_name(dp->dp_spa),
 	    dsl_scrub_pause_resume_check, dsl_scrub_pause_resume_sync, &cmd, 3,
-	    ZFS_SP
-	    ACE_CHECK_RESERVED));
+	    ZFS_SPACE_CHECK_RESERVED));
 }
 
 
