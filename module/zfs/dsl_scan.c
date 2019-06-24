@@ -860,9 +860,6 @@ static int
 dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 {
 	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
-	
-
-	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 
 	if (dsl_scan_is_running(scn))
 		return (SET_ERROR(EBUSY));
@@ -895,7 +892,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	spa_t *spa;
 	int error;
 	
-	char name = "phase1";
+	char name[] = "phase1";
 	if ((error = spa_open(name, &spa, FTAG)) != 0)
 		return (error);
 	size_t count = spa_get_errlog_size(spa);
