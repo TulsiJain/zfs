@@ -2333,7 +2333,7 @@ zpool_scan(zpool_handle_t *zhp, pool_scan_func_t func, pool_scrub_cmd_t cmd)
 	zc.zc_cookie = func;
 	zc.zc_flags = cmd;
 
-	int a = zfs_ioctl(hdl, ZFS_IOC_POOL_SCAN, &zc) == 0);
+	int a = zfs_ioctl(hdl, ZFS_IOC_POOL_SCAN, &zc);
 	printf("%s %d\n",  "a is ", a);
 	if (a == 0){
 		printf("%s\n",  "zpool_scan zfs_ioctl");
