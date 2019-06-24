@@ -886,7 +886,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 
 	zfs_cmd_t zc = {"\0"};
 	
-	uint64_t count;
+	// uint64_t count;
 	zbookmark_phys_t *zb = NULL;
 
 	// spa_t *spa;
