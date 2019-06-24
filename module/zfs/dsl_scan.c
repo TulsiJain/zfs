@@ -871,11 +871,11 @@ dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 
 }
 
-static int
-zbookmark_mem_compare(const void *a, const void *b)
-{
-	return (memcmp(a, b, sizeof (zbookmark_phys_t)));
-}
+// static int
+// zbookmark_mem_compare(const void *a, const void *b)
+// {
+// 	return (memcmp(a, b, sizeof (zbookmark_phys_t)));
+// }
 
 static void
 dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
