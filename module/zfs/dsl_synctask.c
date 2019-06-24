@@ -45,7 +45,7 @@ dsl_sync_task_common(const char *pool, dsl_checkfunc_t *checkfunc,
     int blocks_modified, zfs_space_check_t space_check, boolean_t early)
 {
 	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_sync_task_common" );
+		printk("%s\n", "entered dmu_tx_get_txg" );
 	#endif
 	spa_t *spa;
 	dmu_tx_t *tx;
@@ -82,7 +82,6 @@ top:
 
 	err = dst.dst_checkfunc(arg, tx);
 	dsl_pool_config_exit(dp, FTAG);
-
 	
 
 	if (err != 0) {
@@ -99,10 +98,6 @@ top:
 
 	
 	dmu_tx_commit(tx);
-
-	#ifdef _KERNEL
-		printk("%s\n", "about to call both func" );
-	#endif
 
 	txg_wait_synced(dp, dst.dst_txg);
 
@@ -148,13 +143,6 @@ dsl_sync_task(const char *pool, dsl_checkfunc_t *checkfunc,
     dsl_syncfunc_t *syncfunc, void *arg,
     int blocks_modified, zfs_space_check_t space_check)
 {
-	#ifdef _KERNEL
-		printk("%s\n", "entered dsl_sync_task" );
-	#endif	
-
-	#ifdef _KERNEL
-		printk("%s\n", "returned dsl_sync_task");
-	#endif
 	return (dsl_sync_task_common(pool, checkfunc, syncfunc, arg,
 	    blocks_modified, space_check, B_FALSE));
 }

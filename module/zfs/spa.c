@@ -7320,25 +7320,6 @@ spa_scan_err(spa_t *spa)
 		printk("%s\n", "spa_scan_err entered" );
 	#endif
 
-	// if (func >= POOL_SCAN_FUNCS || func == POOL_SCAN_NONE){
-	// 	return (SET_ERROR(ENOTSUP));
-	// }
-
-	// if (func == POOL_SCAN_RESILVER &&
-	//     !spa_feature_is_enabled(spa, SPA_FEATURE_RESILVER_DEFER)){
-	// 	return (SET_ERROR(ENOTSUP));
-	// }
-		
-	// /*
-	//  * If a resilver was requested, but there is no DTL on a
-	//  * writeable leaf device, we have nothing to do.
-	//  */
-	// if (func == POOL_SCAN_RESILVER &&
-	//     !vdev_resilver_needed(spa->spa_root_vdev, NULL, NULL)) {
-	// 	spa_async_request(spa, SPA_ASYNC_RESILVER_DONE);
-	// 	return (0);
-	// }
-
 	#ifdef _KERNEL
 		dsl_pool_t *dp = spa->spa_dsl_pool;
 		dsl_scan_t *scn = dp->dp_scan;

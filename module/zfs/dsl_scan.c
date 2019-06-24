@@ -720,9 +720,6 @@ dsl_scan_setup_check(void *arg, dmu_tx_t *tx)
 	if (dsl_scan_is_running(scn))
 		return (SET_ERROR(EBUSY));
 
-	#ifdef _KERNEL
-		printk("%s\n", "returned dsl_scan_setup_check" );
-	#endif
 	return (0);
 }
 
@@ -862,32 +859,107 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 static int
 dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 {
-	// pool_scrub_cmd_t *cmd = arg;
-	// dsl_pool_t *dp = dmu_tx_pool(tx);
-	// dsl_scan_t *scn = dp->dp_scan;
+	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
+	
 
-	// if (*cmd == POOL_SCRUB_PAUSE) {
-	// 	/* can't pause a scrub when there is no in-progress scrub */
-	// 	if (!dsl_scan_scrubbing(dp))
-	// 		return (SET_ERROR(ENOENT));
+	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 
-	// 	/* can't pause a paused scrub */
-	// 	if (dsl_scan_is_paused_scrub(scn))
-	// 		return (SET_ERROR(EBUSY));
-	// } else if (*cmd != POOL_SCRUB_NORMAL) {
-	// 	return (SET_ERROR(ENOTSUP));
-	// }
+	if (dsl_scan_is_running(scn))
+		return (SET_ERROR(EBUSY));
 
+	#ifdef _KERNEL
+		printk("%s\n", "dsl_scrub_err_check");
+	#endif
 	return (0);
+
 }
 
 static void
 dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 {
-	// pool_scrub_cmd_t *cmd = arg;
-	// dsl_pool_t *dp = dmu_tx_pool(tx);
-	// spa_t *spa = dp->dp_spa;
+	#ifdef _KERNEL
+		printk("%s\n", "entered dsl_scrub_err_sync");
+	#endif
+	pool_scrub_cmd_t *cmd = arg;
+	dsl_pool_t *dp = dmu_tx_pool(tx);
+	spa_t *spa = dp->dp_spa;
 	// dsl_scan_t *scn = dp->dp_scan;
+
+	// zpool_handle_t *zhp = arg;
+
+	zfs_cmd_t zc = {"\0"};
+	
+	uint64_t count;
+	zbookmark_phys_t *zb = NULL;
+
+	spa_t *spa;
+	int error;
+	
+	char name = "phase1";
+	if ((error = spa_open(name, &spa, FTAG)) != 0)
+		return (error);
+	size_t count = spa_get_errlog_size(spa);
+
+	zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
+	    count * sizeof (zbookmark_phys_t));
+	zc.zc_nvlist_dst_size = count;
+
+	printk("SPA opened successfully \n");
+	error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
+	    &count);
+	
+	printk("error count is %d\n", error);
+	printk("count is kernel is %zu\n", count);
+	if (error == 0){
+		zc->zc_nvlist_dst_size = count;
+	}
+	else{
+		zc->zc_nvlist_dst_size = spa_get_errlog_size(spa);
+		printk("spa get_errlog size is %llu\n", zc->zc_nvlist_dst_size);
+	}
+	spa_close(spa, FTAG);
+	// return (error);
+	// int i;
+
+	// /*
+	//  * Retrieve the raw error list from the kernel.  If the number of errors
+	//  * has increased, allocate more space and continue until we get the
+	//  * entire list.
+	//  */
+	// verify(nvlist_lookup_uint64(zhp->zpool_config, ZPOOL_CONFIG_ERRCOUNT,
+	//     &count) == 0);
+
+	// if (count == 0){
+	// 	return (0);
+	// }
+
+	// zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
+	//     count * sizeof (zbookmark_phys_t));
+	// zc.zc_nvlist_dst_size = count;
+	
+	// (void) strcpy(zc.zc_name, zhp->zpool_name);
+	// for (;;) {
+	// 	printf("infinite for loop executing \n");
+	// 	if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_ERROR_LOG,
+	// 	    &zc) != 0) {
+	// 		free((void *)(uintptr_t)zc.zc_nvlist_dst);
+	// 		if (errno == ENOMEM) {
+	// 			void *dst;
+
+	// 			count = zc.zc_nvlist_dst_size;
+	// 			dst = zfs_alloc(zhp->zpool_hdl, count *
+	// 			    sizeof (zbookmark_phys_t));
+	// 			zc.zc_nvlist_dst = (uintptr_t)dst;
+	// 		} else {
+	// 			return (zpool_standard_error_fmt(hdl, errno,
+	// 			    dgettext(TEXT_DOMAIN, "errors: List of "
+	// 			    "errors unavailable")));
+	// 		}
+	// 	} else {
+	// 		break;
+	// 	}
+	// }
+
 
 	// if (*cmd == POOL_SCRUB_PAUSE) {
 	// 	/* can't pause a scrub when there is no in-progress scrub */
@@ -919,17 +991,41 @@ int
 dsl_scan_err(dsl_pool_t *dp)
 {
 	spa_t *spa = dp->dp_spa;
-	// dsl_scan_t *scn = dp->dp_scan;
 
 	#ifdef _KERNEL
 		printk("%s\n", "entered dsl_scan_err");
 	#endif
 
-	spa_vdev_state_enter(spa, SCL_NONE);
-	spa->spa_scrub_reopen = B_TRUE;
-	vdev_reopen(spa->spa_root_vdev);
-	spa->spa_scrub_reopen = B_FALSE;
-	(void) spa_vdev_state_exit(spa, NULL, 0);
+	/*
+	 * Purge all vdev caches and probe all devices.  We do this here
+	 * rather than in sync context because this requires a writer lock
+	 * on the spa_config lock, which we can't do from sync context.  The
+	 * spa_scrub_reopen flag indicates that vdev_open() should not
+	 * attempt to start another scrub.
+	 */
+	// spa_vdev_state_enter(spa, SCL_NONE);
+	// spa->spa_scrub_reopen = B_TRUE;
+	// vdev_reopen(spa->spa_root_vdev);
+	// spa->spa_scrub_reopen = B_FALSE;
+	// (void) spa_vdev_state_exit(spa, NULL, 0);
+
+	if (func == POOL_SCAN_RESILVER) {
+		dsl_resilver_restart(spa->spa_dsl_pool, 0);
+		return (0);
+	}
+
+	if (func == POOL_SCAN_SCRUB && dsl_scan_is_paused_scrub(scn)) {
+
+		/* got scrub start cmd, resume paused scrub */
+		int err = dsl_scrub_set_pause_resume(scn->scn_dp,
+		    POOL_SCRUB_NORMAL);
+		if (err == 0) {
+			spa_event_notify(spa, NULL, NULL, ESC_ZFS_SCRUB_RESUME);
+			return (ECANCELED);
+		}
+
+		return (SET_ERROR(err));
+	}
 
 	return (dsl_sync_task(spa_name(dp->dp_spa),
 	    dsl_scrub_err_check, dsl_scrub_err_sync, NULL, 3,
