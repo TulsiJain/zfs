@@ -7317,7 +7317,7 @@ spa_scan_err(spa_t *spa)
 	ASSERT(spa_config_held(spa, SCL_ALL, RW_WRITER) == 0);
 
 	#ifdef _KERNEL
-		printk("%s\n", "spa_scan entered" );
+		printk("%s\n", "spa_scan_err entered" );
 	#endif
 
 	// if (func >= POOL_SCAN_FUNCS || func == POOL_SCAN_NONE){

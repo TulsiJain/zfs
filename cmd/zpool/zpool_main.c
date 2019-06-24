@@ -6726,7 +6726,7 @@ zpool_do_scrub(int argc, char **argv)
 	cb.cb_scrub_cmd = POOL_SCRUB_NORMAL;
 
 	/* check options */
-	while ((c = getopt(argc, argv, "sp")) != -1) {
+	while ((c = getopt(argc, argv, "spe")) != -1) {
 		switch (c) {
 		case 's':
 			cb.cb_type = POOL_SCAN_NONE;
