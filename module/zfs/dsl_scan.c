@@ -877,7 +877,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	#ifdef _KERNEL
 		printk("%s\n", "entered dsl_scrub_err_sync");
 	#endif
-	pool_scrub_cmd_t *cmd = arg;
+	// pool_scrub_cmd_t *cmd = arg;
 	dsl_pool_t *dp = dmu_tx_pool(tx);
 	spa_t *spa = dp->dp_spa;
 	// dsl_scan_t *scn = dp->dp_scan;
@@ -889,12 +889,12 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	uint64_t count;
 	zbookmark_phys_t *zb = NULL;
 
-	spa_t *spa;
+	// spa_t *spa;
 	int error;
 	
-	char name[] = "phase1";
-	if ((error = spa_open(name, &spa, FTAG)) != 0)
-		return (error);
+	// char name[] = "phase1";
+	// if ((error = spa_open(name, &spa, FTAG)) != 0)
+	// 	return (error);
 	size_t count = spa_get_errlog_size(spa);
 
 	zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
@@ -914,7 +914,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 		zc->zc_nvlist_dst_size = spa_get_errlog_size(spa);
 		printk("spa get_errlog size is %llu\n", zc->zc_nvlist_dst_size);
 	}
-	spa_close(spa, FTAG);
+	// spa_close(spa, FTAG);
 	// return (error);
 	// int i;
 
