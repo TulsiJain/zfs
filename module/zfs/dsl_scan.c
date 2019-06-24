@@ -897,23 +897,24 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	// 	return (error);
 	size_t count = spa_get_errlog_size(spa);
 
-	zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
-	    count * sizeof (zbookmark_phys_t));
-	zc.zc_nvlist_dst_size = count;
+	// zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
+	//     count * sizeof (zbookmark_phys_t));
+	// zc.zc_nvlist_dst_size = count;
 
-	printk("SPA opened successfully \n");
-	error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
-	    &count);
+	// // printk("SPA opened successfully \n");
 	
-	printk("error count is %d\n", error);
-	printk("count is kernel is %zu\n", count);
-	if (error == 0){
-		zc->zc_nvlist_dst_size = count;
-	}
-	else{
-		zc->zc_nvlist_dst_size = spa_get_errlog_size(spa);
-		printk("spa get_errlog size is %llu\n", zc->zc_nvlist_dst_size);
-	}
+	// error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
+	    // &count);
+	
+	// printk("error count is %d\n", error);
+	// printk("count is kernel is %zu\n", count);
+	// if (error == 0){
+	// 	zc->zc_nvlist_dst_size = count;
+	// }
+	// else{
+	// 	zc->zc_nvlist_dst_size = spa_get_errlog_size(spa);
+	// 	printk("spa get_errlog size is %llu\n", zc->zc_nvlist_dst_size);
+	// }
 	// spa_close(spa, FTAG);
 	// return (error);
 	// int i;
