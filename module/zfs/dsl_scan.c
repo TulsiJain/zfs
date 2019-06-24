@@ -890,7 +890,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	// zbookmark_phys_t *zb = NULL;
 
 	// spa_t *spa;
-	// int error;
+	int error;
 	
 	// char name[] = "phase1";
 	// if ((error = spa_open(name, &spa, FTAG)) != 0)
