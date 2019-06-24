@@ -862,9 +862,9 @@ dsl_scan(dsl_pool_t *dp, pool_scan_func_t func)
 static int
 dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 {
-	pool_scrub_cmd_t *cmd = arg;
-	dsl_pool_t *dp = dmu_tx_pool(tx);
-	dsl_scan_t *scn = dp->dp_scan;
+	// pool_scrub_cmd_t *cmd = arg;
+	// dsl_pool_t *dp = dmu_tx_pool(tx);
+	// dsl_scan_t *scn = dp->dp_scan;
 
 	// if (*cmd == POOL_SCRUB_PAUSE) {
 	// 	/* can't pause a scrub when there is no in-progress scrub */
@@ -884,10 +884,10 @@ dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 static void
 dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 {
-	pool_scrub_cmd_t *cmd = arg;
-	dsl_pool_t *dp = dmu_tx_pool(tx);
-	spa_t *spa = dp->dp_spa;
-	dsl_scan_t *scn = dp->dp_scan;
+	// pool_scrub_cmd_t *cmd = arg;
+	// dsl_pool_t *dp = dmu_tx_pool(tx);
+	// spa_t *spa = dp->dp_spa;
+	// dsl_scan_t *scn = dp->dp_scan;
 
 	// if (*cmd == POOL_SCRUB_PAUSE) {
 	// 	/* can't pause a scrub when there is no in-progress scrub */
