@@ -898,7 +898,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	size_t count = spa_get_errlog_size(spa);
 
 	#ifdef _KERNEL
-		printk("%d\n", count);
+		printk("%ld\n", count);
 	#endif
 
 
