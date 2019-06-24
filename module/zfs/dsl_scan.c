@@ -905,7 +905,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	// zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
 	//     count * sizeof (zbookmark_phys_t));
 
-	&zc.zc_nvlist_dst = kmem_zalloc(count * sizeof (zbookmark_phys_t), KM_SLEEP);
+	zc.zc_nvlist_dst = (uintptr_t)kmem_zalloc(count * sizeof (zbookmark_phys_t), KM_SLEEP);
 	zc.zc_nvlist_dst_size = count;
 
 	// // printk("SPA opened successfully \n");
