@@ -27,7 +27,6 @@
  */
 
 #include <sys/dsl_scan.h>
-#include <math.h>
 #include <sys/dsl_pool.h>
 #include <sys/dsl_dataset.h>
 #include <sys/dsl_prop.h>
@@ -931,9 +930,9 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		uint64_t blkptrs_in_ind =
 			    indirect_block_size / sizeof (blkptr_t);
 		uint64_t offset =
-			    pow(blkptrs_in_ind, zb[i].zb_level) * zb[i].zb_blkid;
+			    (blkptrs_in_ind^zb[i].zb_level) * zb[i].zb_blkid;
 		uint64_t offset_end =
-			    pow(blkptrs_in_ind, zb[i].zb_level) * (zb[i].zb_blkid + 1);
+			    (blkptrs_in_ind^zb[i].zb_level) * (zb[i].zb_blkid + 1);
 
 	        uint64_t len = offset_end - offset - 1;
 		dmu_prefetch(ds->ds_objset, 
