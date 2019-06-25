@@ -919,7 +919,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		VERIFY0(dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds));
 		objset_t *os = ds->ds_objset;
 		dmu_object_info_t doi;
-		dmu_object_info(os, zb[i].zb_object, &doi)
+		dmu_object_info(os, zb[i].zb_object, &doi);
 		
 		uint64_t indirect_block_size = doi.doi_metadata_block_size;
 
