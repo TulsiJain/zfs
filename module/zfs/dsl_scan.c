@@ -930,16 +930,17 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 		uint64_t blkptrs_in_ind =
 			    indirect_block_size / sizeof (blkptr_t);
-		uint64_t min_offset_blks =
+		uint64_t offset =
 			    pow(blkptrs_in_ind, zb[i].zb_level) * zb[i].zb_blkid;
+		uint64_t offset_end =
+			    pow(blkptrs_in_ind, zb[i].zb_level) * (zb[i].zb_blkid + 1);
 
-		
-
+	        uint64_t len = offset_end - offset - 1;
 		dmu_prefetch(ds->ds_objset, 
 			zb[i].zb_object, 
 			zb[i].zb_level, 
-			uint64_t offset,
-    			uint64_t len, 
+			offset,
+    			len, 
     			ZIO_PRIORITY_NOW);
 	}
 }
