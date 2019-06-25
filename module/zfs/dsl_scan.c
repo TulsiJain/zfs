@@ -892,54 +892,29 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 
 	zfs_cmd_t zc = {"\0"};
 	
-	// uint64_t count;
-	// zbookmark_phys_t *zb = NULL;
-
-	// spa_t *spa;
-	int error;
-	
-	// char name[] = "phase1";
-	// if ((error = spa_open(name, &spa, FTAG)) != 0)
-	// 	return (error);
-	uint64_t count = spa_get_errlog_size(spa);
+	uint64_t error_count = spa_get_errlog_size(spa);
 	#ifdef _KERNEL
-		printk("count is 1 %llu\n", (u_longlong_t)count);
+		printk("count is 1 %llu\n", (u_longlong_t)error_count);
 	#endif
 
-	// zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
-	//     count * sizeof (zbookmark_phys_t));
-
-	zc.zc_nvlist_dst = (uintptr_t)kmem_zalloc(count * sizeof (zbookmark_phys_t), KM_SLEEP);
-	zc.zc_nvlist_dst_size = count;
+	zc.zc_nvlist_dst = (uintptr_t)kmem_zalloc(error_count * sizeof (zbookmark_phys_t), KM_SLEEP);
+	zc.zc_nvlist_dst_size = error_count;
 
 	// // printk("SPA opened successfully \n");
-	size_t count1 = (size_t)zc.zc_nvlist_dst_size;
-	error = spa_get_errlog(spa, (void *)(uintptr_t)zc.zc_nvlist_dst,
-	    &count1);
+	size_t retrieved_error = (size_t)zc.zc_nvlist_dst_size;
+	int error = spa_get_errlog(spa, (void *)(uintptr_t)zc.zc_nvlist_dst,
+	    &retrieved_error);
 
 	if (error == 0){
-		zc.zc_nvlist_dst_size = count1;
-	}else{
-		zc.zc_nvlist_dst_size = spa_get_errlog_size(spa);
+		zc.zc_nvlist_dst_size = retrieved_error;
 	}
 
 	zbookmark_phys_t *zb = NULL;
 	zb = ((zbookmark_phys_t *)(uintptr_t)zc.zc_nvlist_dst) +
 	    zc.zc_nvlist_dst_size;
 
-	#ifdef _KERNEL
-		printk("count is 3 %llu\n", (u_longlong_t)count);
-	#endif
-	count -= zc.zc_nvlist_dst_size;
+	error_count -= zc.zc_nvlist_dst_size;
 
-	#ifdef _KERNEL
-		printk("count is 4 %llu\n", (u_longlong_t)count);
-	#endif
-	
-	#ifdef _KERNEL
-		printk("can not copy %llu\n", (u_longlong_t)zc.zc_nvlist_dst_size);
-		printk("count is %llu\n", (u_longlong_t)count);
-	#endif
 	// qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
 	for (int i = 0; i < count; i++) {
 		#ifdef _KERNEL
