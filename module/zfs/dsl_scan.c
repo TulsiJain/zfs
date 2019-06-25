@@ -916,7 +916,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	error_count -= zc.zc_nvlist_dst_size;
 
 	// qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < error_count; i++) {
 		#ifdef _KERNEL
 			printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
 			printk("%llu\n", (u_longlong_t)zb[i].zb_object);
@@ -929,10 +929,6 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	// error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
 	//     &count);
 
-	#ifdef _KERNEL
-		printk("%d\n", error);
-	#endif
-	
 	// printk("error count is %d\n", error);
 	// printk("count is kernel is %zu\n", count);
 	// if (error == 0){
