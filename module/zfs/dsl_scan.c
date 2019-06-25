@@ -914,19 +914,11 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		// #ifdef _KERNEL
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
-		sa_handle_t *hdl;
-		dmu_buf_t *db;
-		int error1;
-
-		error1 = zfs_grab_sa_handle(osp, obj, &hdl, &db, FTAG);
-		if (error1 != 0){
-			#ifdef _KERNEL
-				printk("I am out");
-			#endif
-		}
-
+		dsl_dataset_t *ds;
+		VERIFY0(dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds));
+		objset_t *os = ds->ds_objset;
 		dmu_object_info_t doi;
-		sa_object_info(hdl, &doi);
+		dmu_object_info(os, zb[i].zb_object, &doi)
 		
 		uint64_t indirect_block_size = doi.doi_metadata_block_size;
 
@@ -940,8 +932,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		uint64_t min_offset_blks =
 			    pow(blkptrs_in_ind, zb[i].zb_level) * zb[i].zb_blkid;
 
-		dsl_dataset_t *ds;
-		VERIFY0(dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds));
+		
 
 		dmu_prefetch(ds->ds_objset, 
 			zb[i].zb_object, 
