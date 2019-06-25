@@ -919,12 +919,8 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 
 	if (error == 0){
 		zc.zc_nvlist_dst_size = count1;
-	}
-	else{
-		zc->zc_nvlist_dst_size = spa_get_errlog_size(spa);
-		#ifdef _KERNEL
-			printk("spa get_errlog size is %llu\n", zc->zc_nvlist_dst_size);
-		#endif
+	}else{
+		zc.zc_nvlist_dst_size = spa_get_errlog_size(spa);
 	}
 
 	zbookmark_phys_t *zb = NULL;
@@ -933,13 +929,12 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 
 	#ifdef _KERNEL
 		printk("count is 3 %ld\n", count);
-	
+	#endif
 	count -= zc.zc_nvlist_dst_size;
 
 	#ifdef _KERNEL
 		printk("count is 4 %ld\n", count);
 	#endif
-
 	
 	#ifdef _KERNEL
 		printk("can not copy %llu\n", (u_longlong_t)zc.zc_nvlist_dst_size);
