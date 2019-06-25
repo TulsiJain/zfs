@@ -903,7 +903,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	// 	return (error);
 	uint64_t count = spa_get_errlog_size(spa);
 	#ifdef _KERNEL
-		printk("count is 1 %ld\n", count);
+		printk("count is 1 %llu\n", u_longlong_t);
 	#endif
 
 	// zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
@@ -928,12 +928,12 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	    zc.zc_nvlist_dst_size;
 
 	#ifdef _KERNEL
-		printk("count is 3 %ld\n", count);
+		printk("count is 3 %llu\n", (u_longlong_t)count);
 	#endif
 	count -= zc.zc_nvlist_dst_size;
 
 	#ifdef _KERNEL
-		printk("count is 4 %ld\n", count);
+		printk("count is 4 %llu\n", (u_longlong_t)count);
 	#endif
 	
 	#ifdef _KERNEL
