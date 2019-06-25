@@ -927,20 +927,20 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		#endif
 		// uint64_t data_block_size = doi.doi_data_block_size;
 
-		uint64_t blkptrs_in_ind =
-			    indirect_block_size / sizeof (blkptr_t);
-		uint64_t offset =
-			    (blkptrs_in_ind^zb[i].zb_level) * zb[i].zb_blkid;
-		uint64_t offset_end =
-			    (blkptrs_in_ind^zb[i].zb_level) * (zb[i].zb_blkid + 1);
+		// uint64_t blkptrs_in_ind =
+		// 	    indirect_block_size / sizeof (blkptr_t);
+		// uint64_t offset =
+		// 	    (blkptrs_in_ind^zb[i].zb_level) * zb[i].zb_blkid;
+		// uint64_t offset_end =
+		// 	    (blkptrs_in_ind^zb[i].zb_level) * (zb[i].zb_blkid + 1);
 
-	        uint64_t len = offset_end - offset - 1;
-		dmu_prefetch(ds->ds_objset, 
-			zb[i].zb_object, 
-			zb[i].zb_level, 
-			offset,
-    			len, 
-    			ZIO_PRIORITY_NOW);
+	 //        uint64_t len = offset_end - offset - 1;
+		// dmu_prefetch(ds->ds_objset, 
+		// 	zb[i].zb_object, 
+		// 	zb[i].zb_level, 
+		// 	offset,
+  //   			len, 
+  //   			ZIO_PRIORITY_NOW);
 	}
 }
 
