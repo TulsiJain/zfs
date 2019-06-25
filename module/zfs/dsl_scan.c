@@ -881,7 +881,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	// pool_scrub_cmd_t *cmd = arg;
 	dsl_pool_t *dp = dmu_tx_pool(tx);
-	// spa_t *spa = dp->dp_spa;
+	spa_t *spa = dp->dp_spa;
 	// dsl_scan_t *scn = dp->dp_scan;
 
 	zfs_cmd_t zc = {"\0"};
@@ -994,7 +994,7 @@ dsl_scan_err(dsl_pool_t *dp)
 	// }
 
 	return (dsl_sync_task(spa_name(dp->dp_spa),
-	    dsl_scrub_err_check, dsl_scrub_err_sync, NULL, 3,
+	    dsl_scrub_err_check, dsl_scrub_err_setup_sync, NULL, 3,
 	    ZFS_SPACE_CHECK_RESERVED));
 }
 
