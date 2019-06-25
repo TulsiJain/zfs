@@ -871,28 +871,23 @@ dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 
 }
 
-// static int
-// zbookmark_mem_compare(const void *a, const void *b)
-// {
-// 	return (memcmp(a, b, sizeof (zbookmark_phys_t)));
-// }
-
 static void
-dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
+dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 {
 	#ifdef _KERNEL
 		printk("%s\n", "entered dsl_scrub_err_sync");
 	#endif
+	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
+
 	// pool_scrub_cmd_t *cmd = arg;
 	dsl_pool_t *dp = dmu_tx_pool(tx);
-	spa_t *spa = dp->dp_spa;
+	// spa_t *spa = dp->dp_spa;
 	// dsl_scan_t *scn = dp->dp_scan;
 
-	// zpool_handle_t *zhp = arg;
-
 	zfs_cmd_t zc = {"\0"};
-	
+
 	uint64_t error_count = spa_get_errlog_size(spa);
+	
 	#ifdef _KERNEL
 		printk("count is 1 %llu\n", (u_longlong_t)error_count);
 	#endif
@@ -900,7 +895,6 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	zc.zc_nvlist_dst = (uintptr_t)kmem_zalloc(error_count * sizeof (zbookmark_phys_t), KM_SLEEP);
 	zc.zc_nvlist_dst_size = error_count;
 
-	// // printk("SPA opened successfully \n");
 	size_t retrieved_error = (size_t)zc.zc_nvlist_dst_size;
 	int error = spa_get_errlog(spa, (void *)(uintptr_t)zc.zc_nvlist_dst,
 	    &retrieved_error);
@@ -917,94 +911,45 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 
 	// qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
 	for (int i = 0; i < error_count; i++) {
+		// #ifdef _KERNEL
+			// printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
+			// printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
+		sa_handle_t *hdl;
+		dmu_buf_t *db;
+		int error1;
+
+		error1 = zfs_grab_sa_handle(osp, obj, &hdl, &db, FTAG);
+		if (error1 != 0){
+			#ifdef _KERNEL
+				printk("I am out");
+			#endif
+		}
+
+		dmu_object_info_t doi;
+		sa_object_info(hdl, &doi);
+		
+		uint64_t indirect_block_size = doi.doi_metadata_block_size;
+
 		#ifdef _KERNEL
-			printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
-			printk("%llu\n", (u_longlong_t)zb[i].zb_object);
-			printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
-			printk("%llu\n", (u_longlong_t)zb[i].zb_level);
+			printk("%llu", (u_longlong_t)indirect_block_size);
 		#endif
+		// uint64_t data_block_size = doi.doi_data_block_size;
+
+		uint64_t blkptrs_in_ind =
+			    indirect_block_size / sizeof (blkptr_t);
+		uint64_t min_offset_blks =
+			    pow(blkptrs_in_ind, zb[i].zb_level) * zb[i].zb_blkid;
+
+		dsl_dataset_t *ds;
+		VERIFY0(dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds));
+
+		dmu_prefetch(ds->ds_objset, 
+			zb[i].zb_object, 
+			zb[i].zb_level, 
+			uint64_t offset,
+    			uint64_t len, 
+    			ZIO_PRIORITY_NOW);
 	}
-	// verify(nvlist_alloc(nverrlistp, 0, KM_SLEEP) == 0);
-
-	// error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
-	//     &count);
-
-	// printk("error count is %d\n", error);
-	// printk("count is kernel is %zu\n", count);
-	// if (error == 0){
-	// 	zc->zc_nvlist_dst_size = count;
-	// }
-	// else{
-	// 	zc->zc_nvlist_dst_size = spa_get_errlog_size(spa);
-	// 	printk("spa get_errlog size is %llu\n", zc->zc_nvlist_dst_size);
-	// }
-	// spa_close(spa, FTAG);
-	// return (error);
-	// int i;
-
-	// /*
-	//  * Retrieve the raw error list from the kernel.  If the number of errors
-	//  * has increased, allocate more space and continue until we get the
-	//  * entire list.
-	//  */
-	// verify(nvlist_lookup_uint64(zhp->zpool_config, ZPOOL_CONFIG_ERRCOUNT,
-	//     &count) == 0);
-
-	// if (count == 0){
-	// 	return (0);
-	// }
-
-	// zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
-	//     count * sizeof (zbookmark_phys_t));
-	// zc.zc_nvlist_dst_size = count;
-	
-	// (void) strcpy(zc.zc_name, zhp->zpool_name);
-	// for (;;) {
-	// 	printf("infinite for loop executing \n");
-	// 	if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_ERROR_LOG,
-	// 	    &zc) != 0) {
-	// 		free((void *)(uintptr_t)zc.zc_nvlist_dst);
-	// 		if (errno == ENOMEM) {
-	// 			void *dst;
-
-	// 			count = zc.zc_nvlist_dst_size;
-	// 			dst = zfs_alloc(zhp->zpool_hdl, count *
-	// 			    sizeof (zbookmark_phys_t));
-	// 			zc.zc_nvlist_dst = (uintptr_t)dst;
-	// 		} else {
-	// 			return (zpool_standard_error_fmt(hdl, errno,
-	// 			    dgettext(TEXT_DOMAIN, "errors: List of "
-	// 			    "errors unavailable")));
-	// 		}
-	// 	} else {
-	// 		break;
-	// 	}
-	// }
-
-
-	// if (*cmd == POOL_SCRUB_PAUSE) {
-	// 	/* can't pause a scrub when there is no in-progress scrub */
-	// 	spa->spa_scan_pass_scrub_pause = gethrestime_sec();
-	// 	scn->scn_phys.scn_flags |= DSF_SCRUB_PAUSED;
-	// 	scn->scn_phys_cached.scn_flags |= DSF_SCRUB_PAUSED;
-	// 	dsl_scan_sync_state(scn, tx, SYNC_CACHED);
-	// 	spa_event_notify(spa, NULL, NULL, ESC_ZFS_SCRUB_PAUSED);
-	// } else {
-	// 	ASSERT3U(*cmd, ==, POOL_SCRUB_NORMAL);
-	// 	if (dsl_scan_is_paused_scrub(scn)) {
-	// 		/*
-	// 		 * We need to keep track of how much time we spend
-	// 		 * paused per pass so that we can adjust the scrub rate
-	// 		 * shown in the output of 'zpool status'
-	// 		 */
-	// 		spa->spa_scan_pass_scrub_spent_paused +=
-	// 		    gethrestime_sec() - spa->spa_scan_pass_scrub_pause;
-	// 		spa->spa_scan_pass_scrub_pause = 0;
-	// 		scn->scn_phys.scn_flags &= ~DSF_SCRUB_PAUSED;
-	// 		scn->scn_phys_cached.scn_flags &= ~DSF_SCRUB_PAUSED;
-	// 		dsl_scan_sync_state(scn, tx, SYNC_CACHED);
-	// 	}
-	// }
 }
 
 
