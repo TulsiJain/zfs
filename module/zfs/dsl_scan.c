@@ -903,7 +903,7 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	// 	return (error);
 	size_t count = spa_get_errlog_size(spa);
 	#ifdef _KERNEL
-		printk("%ld\n", count);
+		printk("count is 1 %ld\n", count);
 	#endif
 
 	// zc.zc_nvlist_dst = (uintptr_t)zfs_alloc(zhp->zpool_hdl,
@@ -920,7 +920,15 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	zbookmark_phys_t *zb = NULL;
 	zb = ((zbookmark_phys_t *)(uintptr_t)zc.zc_nvlist_dst) +
 	    zc.zc_nvlist_dst_size;
+
+	#ifdef _KERNEL
+		printk("count is 3 %ld\n", count);
+	#endif
 	count -= zc.zc_nvlist_dst_size;
+
+	#ifdef _KERNEL
+		printk("count is 4 %ld\n", count);
+	#endif
 
 	
 	#ifdef _KERNEL
