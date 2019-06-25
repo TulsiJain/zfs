@@ -27,6 +27,7 @@
  */
 
 #include <sys/dsl_scan.h>
+#include <math.h>
 #include <sys/dsl_pool.h>
 #include <sys/dsl_dataset.h>
 #include <sys/dsl_prop.h>
@@ -877,7 +878,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	#ifdef _KERNEL
 		printk("%s\n", "entered dsl_scrub_err_sync");
 	#endif
-	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
+	// dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 
 	// pool_scrub_cmd_t *cmd = arg;
 	dsl_pool_t *dp = dmu_tx_pool(tx);
