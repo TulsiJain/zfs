@@ -916,6 +916,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
 		dsl_dataset_t *ds;
 		dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds);
+
 		#ifdef _KERNEL
 			printk("%s\n", "hello 1");
 		#else
@@ -950,6 +951,8 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		// 	offset,
   //   			len, 
   //   			ZIO_PRIORITY_NOW);
+		dsl_dataset_rele(ds, FTAG);
+			
 	}
 }
 
