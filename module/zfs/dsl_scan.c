@@ -919,14 +919,14 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 		#ifdef _KERNEL
 			printk("%s\n", "hello 1");
-		#else
+		#endif
 		objset_t *os = ds->ds_objset;
 		dmu_object_info_t doi;
 		dmu_object_info(os, zb[i].zb_object, &doi);
 
 		#ifdef _KERNEL
 			printk("%s\n", "hello 2");
-		#else
+		#endif
 		
 		uint64_t indirect_block_size = doi.doi_metadata_block_size;
 
