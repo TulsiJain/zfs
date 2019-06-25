@@ -941,14 +941,14 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 		printk("count is %llu\n", (u_longlong_t)count);
 	#endif
 	// qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
-	// for (int i = 0; i < count; i++) {
-	// 	#ifdef _KERNEL
-	// 		printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
-	// 		printk("%llu\n", (u_longlong_t)zb[i].zb_object);
-	// 		printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
-	// 		printk("%llu\n", (u_longlong_t)zb[i].zb_level);
-	// 	#endif
-	// }
+	for (int i = 0; i < count; i++) {
+		#ifdef _KERNEL
+			printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
+			printk("%llu\n", (u_longlong_t)zb[i].zb_object);
+			printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
+			printk("%llu\n", (u_longlong_t)zb[i].zb_level);
+		#endif
+	}
 	// verify(nvlist_alloc(nverrlistp, 0, KM_SLEEP) == 0);
 
 	// error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
