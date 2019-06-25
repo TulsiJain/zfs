@@ -924,6 +924,8 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 		#ifdef _KERNEL
 			printk("%llu", (u_longlong_t)indirect_block_size);
+		#else
+			printf("%llu", (u_longlong_t)indirect_block_size);
 		#endif
 		// uint64_t data_block_size = doi.doi_data_block_size;
 
