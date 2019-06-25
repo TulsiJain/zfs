@@ -915,10 +915,17 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
 		dsl_dataset_t *ds;
-		VERIFY0(dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds));
+		dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds);
+		#ifdef _KERNEL
+			printk("%s\n", "hello 1");
+		#else
 		objset_t *os = ds->ds_objset;
 		dmu_object_info_t doi;
 		dmu_object_info(os, zb[i].zb_object, &doi);
+
+		#ifdef _KERNEL
+			printk("%s\n", "hello 2");
+		#else
 		
 		uint64_t indirect_block_size = doi.doi_metadata_block_size;
 
