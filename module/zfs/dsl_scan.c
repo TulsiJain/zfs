@@ -913,12 +913,12 @@ dsl_scrub_err_sync(void *arg, dmu_tx_t *tx)
 	zc.zc_nvlist_dst_size = count;
 
 	// // printk("SPA opened successfully \n");
-	size_t count1 = (size_t)zc->zc_nvlist_dst_size;
+	size_t count1 = (size_t)zc.zc_nvlist_dst_size;
 	error = spa_get_errlog(spa, (void *)(uintptr_t)zc.zc_nvlist_dst,
 	    &count1);
 
 	if (error == 0){
-		zc->zc_nvlist_dst_size = count1;
+		zc.zc_nvlist_dst_size = count1;
 	}
 	else{
 		zc->zc_nvlist_dst_size = spa_get_errlog_size(spa);
