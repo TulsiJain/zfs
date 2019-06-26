@@ -909,6 +909,10 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	error_count -= zc.zc_nvlist_dst_size;
 
+	#ifdef _KERNEL
+		printk("%s\n", "hello 0");
+	#endif
+
 	// qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
 	for (int i = 0; i < error_count; i++) {
 		// #ifdef _KERNEL
@@ -916,31 +920,31 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
 		dsl_dataset_t *ds;
 		#ifdef _KERNEL
-			printk("%s\n", "hello 0");
-		#endif
-		int err = dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds);
-
-		#ifdef _KERNEL
 			printk("%s\n", "hello 1");
-			printk("%d\n", err);
-		#else	
-			printf("%d\n", err);
 		#endif
-		objset_t *os = ds->ds_objset;
-		dmu_object_info_t doi;
-		dmu_object_info(os, zb[i].zb_object, &doi);
+		// int err = dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds);
 
-		#ifdef _KERNEL
-			printk("%s\n", "hello 2");
-		#endif
+		// #ifdef _KERNEL
+		// 	printk("%s\n", "hello 1");
+		// 	printk("%d\n", err);
+		// #else	
+		// 	printf("%d\n", err);
+		// #endif
+		// objset_t *os = ds->ds_objset;
+		// dmu_object_info_t doi;
+		// dmu_object_info(os, zb[i].zb_object, &doi);
+
+		// #ifdef _KERNEL
+		// 	printk("%s\n", "hello 2");
+		// #endif
 		
-		uint64_t indirect_block_size = doi.doi_metadata_block_size;
+		// uint64_t indirect_block_size = doi.doi_metadata_block_size;
 
-		#ifdef _KERNEL
-			printk("%llu", (u_longlong_t)indirect_block_size);
-		#else
-			printf("%llu", (u_longlong_t)indirect_block_size);
-		#endif
+		// #ifdef _KERNEL
+		// 	printk("%llu", (u_longlong_t)indirect_block_size);
+		// #else
+		// 	printf("%llu", (u_longlong_t)indirect_block_size);
+		// #endif
 		// uint64_t data_block_size = doi.doi_data_block_size;
 
 		// uint64_t blkptrs_in_ind =
@@ -957,7 +961,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		// 	offset,
   //   			len, 
   //   			ZIO_PRIORITY_NOW);
-		dsl_dataset_rele(ds, FTAG);
+		// dsl_dataset_rele(ds, FTAG);
 
 	}
 }
