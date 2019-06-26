@@ -917,7 +917,6 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		dsl_dataset_t *ds;
 		#ifdef _KERNEL
 			printk("%s\n", "hello 0");
-			printk("%d\n", err);
 		#endif
 		int err = dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds);
 
