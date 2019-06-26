@@ -918,7 +918,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		// #ifdef _KERNEL
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
-		dsl_dataset_t *ds;
+		// dsl_dataset_t *ds;
 		#ifdef _KERNEL
 			printk("%s\n", "hello 1");
 		#endif
