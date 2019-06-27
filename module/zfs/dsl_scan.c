@@ -951,16 +951,19 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 
 		#ifdef _KERNEL
+			printk("%llu", (u_longlong_t)data_block_size);
 			printk("%llu", (u_longlong_t)indirect_block_size);
 			printk("%llu", (u_longlong_t)blkptrs_in_ind);
 			printk("%llu", (u_longlong_t)offset);
 			printk("%llu", (u_longlong_t)offset_end);
 		#else
+			printf("%llu", (u_longlong_t)data_block_size);
 			printf("%llu", (u_longlong_t)indirect_block_size);
 			printf("%llu", (u_longlong_t)blkptrs_in_ind);
 			printf("%llu", (u_longlong_t)offset);
 			printf("%llu", (u_longlong_t)offset_end);
 		#endif
+		
 		#ifdef _KERNEL
 			printk("%s\n", "hello 2");
 		#endif
