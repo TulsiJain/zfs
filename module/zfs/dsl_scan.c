@@ -924,7 +924,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		#ifdef _KERNEL
 			printk("%d\n", err);
 		#else	
-			printk("%d\n", err);
+			printf("%d\n", err);
 		#endif
 		// objset_t *os = ds->ds_objset;
 		// dmu_object_info_t doi;
