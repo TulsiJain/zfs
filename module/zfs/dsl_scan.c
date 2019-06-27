@@ -871,16 +871,16 @@ dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 
 }
 
-// static uint64_t
-// pow(uint64_t x, int64_t y){
-// 	if (y == 0){
-// 		return x;
-// 	}
-// 	for ( int i =2; i < y; i++){
-// 		x = x*x;
-// 	}
-// 	return x;
-// }
+static uint64_t
+exponent(uint64_t x, int64_t y){
+	if (y == 0){
+		return x;
+	}
+	for ( int i =2; i < y; i++){
+		x = x*x;
+	}
+	return x;
+}
 
 static void
 dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
@@ -946,9 +946,9 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		uint64_t blkptrs_in_ind =
 			    indirect_block_size / sizeof (blkptr_t);
 		uint64_t offset =
-			    pow(blkptrs_in_ind, zb[i].zb_level) * zb[i].zb_blkid * data_block_size;
+			    exponent(blkptrs_in_ind, zb[i].zb_level) * zb[i].zb_blkid * data_block_size;
 		uint64_t len =
-			    pow(blkptrs_in_ind, zb[i].zb_level) * data_block_size;
+			    exponent(blkptrs_in_ind, zb[i].zb_level) * data_block_size;
 
 		#ifdef _KERNEL
 			printk("zb_level %lld", (u_longlong_t)zb[i].zb_level);
