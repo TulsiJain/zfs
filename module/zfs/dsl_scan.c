@@ -932,16 +932,9 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		objset_t *os = ds->ds_objset;
 		dmu_object_info_t doi;
 		dmu_object_info(os, zb[i].zb_object, &doi);
-
 		
 		uint64_t indirect_block_size = doi.doi_metadata_block_size;
 		uint64_t data_block_size = doi.doi_data_block_size;
-
-		// #ifdef _KERNEL
-		// 	printk("indirect_block_size %llu", (u_longlong_t)indirect_block_size);
-		// 	printk("data_block_size %llu", (u_longlong_t)data_block_size);
-		// #endif
-
 		uint64_t blkptrs_in_ind =
 			    indirect_block_size / sizeof (blkptr_t);
 		uint64_t offset =
@@ -949,30 +942,25 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		uint64_t len =
 			    exponent(blkptrs_in_ind, zb[i].zb_level) * data_block_size;
 
-		#ifdef _KERNEL
-			printk("zb_level %lld", (u_longlong_t)zb[i].zb_level);
-			printk("zb_blkid %llu", (u_longlong_t)zb[i].zb_blkid);
-			printk("blkptrs_in_ind %llu", (u_longlong_t)blkptrs_in_ind);
-			printk("offset %llu", (u_longlong_t)offset);
-			printk("len %llu", (u_longlong_t)len);
-		#endif
+		// #ifdef _KERNEL
+		// 	printk("zb_level %lld", (u_longlong_t)zb[i].zb_level);
+		// 	printk("zb_blkid %llu", (u_longlong_t)zb[i].zb_blkid);
+		// 	printk("blkptrs_in_ind %llu", (u_longlong_t)blkptrs_in_ind);
+		// 	printk("offset %llu", (u_longlong_t)offset);
+		// 	printk("len %llu", (u_longlong_t)len);
+		// #endif
 
-		#ifdef _KERNEL
-		#else
-			printf("%llu", (u_longlong_t)data_block_size);
-			printf("%llu", (u_longlong_t)indirect_block_size);
-			printf("%llu", (u_longlong_t)blkptrs_in_ind);
-			printf("%llu", (u_longlong_t)offset);
-			printf("%llu", (u_longlong_t)len);
-		#endif
+		// #ifdef _KERNEL
+		// #else
+		// 	printf("%llu", (u_longlong_t)data_block_size);
+		// 	printf("%llu", (u_longlong_t)indirect_block_size);
+		// 	printf("%llu", (u_longlong_t)blkptrs_in_ind);
+		// 	printf("%llu", (u_longlong_t)offset);
+		// 	printf("%llu", (u_longlong_t)len);
+		// #endif
 
-	        // uint64_t len = offset_end - offset - 1;
-		// dmu_prefetch(ds->ds_objset, 
-		// 	zb[i].zb_object, 
-		// 	zb[i].zb_level, 
-		// 	offset,
-  //   			len, 
-  //   			ZIO_PRIORITY_NOW);
+		dmu_prefetch(os, zb[i].zb_object, zb[i].zb_level, offset, len,
+		    ZIO_PRIORITY_NOW);
 		dsl_dataset_rele(ds, FTAG);
 	}
 }
