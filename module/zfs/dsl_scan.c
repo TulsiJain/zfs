@@ -940,7 +940,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 			    (blkptrs_in_ind^zb[i].zb_level) * (zb[i].zb_blkid + 1)*data_block_size;
 
 		#ifdef _KERNEL
-			printk("zb_level %lld", (u_longlong_t)zb[i].zb_level));
+			printk("zb_level %lld", (u_longlong_t)zb[i].zb_level);
 			printk("zb_blkid %llu", (u_longlong_t)zb[i].zb_blkid);
 			printk("blkptrs_in_ind %llu", (u_longlong_t)blkptrs_in_ind);
 			printk("offset %llu", (u_longlong_t)offset);
