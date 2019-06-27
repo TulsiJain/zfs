@@ -871,12 +871,12 @@ dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 
 }
 
-static void
+static uint64_t
 pow(uint64_t x, int64_t y){
 	if (y == 0){
 		return x;
 	}
-	for ( int i =2; i < y; y++){
+	for ( int i =2; i < y; i++){
 		x = x*x;
 	}
 	return x;
@@ -955,7 +955,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 			printk("zb_blkid %llu", (u_longlong_t)zb[i].zb_blkid);
 			printk("blkptrs_in_ind %llu", (u_longlong_t)blkptrs_in_ind);
 			printk("offset %llu", (u_longlong_t)offset);
-			printk("offset %llu", (u_longlong_t)offset_end);
+			printk("len %llu", (u_longlong_t)len);
 		#endif
 
 		#ifdef _KERNEL
@@ -964,7 +964,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 			printf("%llu", (u_longlong_t)indirect_block_size);
 			printf("%llu", (u_longlong_t)blkptrs_in_ind);
 			printf("%llu", (u_longlong_t)offset);
-			printf("%llu", (u_longlong_t)offset_end);
+			printf("%llu", (u_longlong_t)len);
 		#endif
 
 	        // uint64_t len = offset_end - offset - 1;
