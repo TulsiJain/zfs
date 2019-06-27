@@ -919,6 +919,10 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		dsl_dataset_t *ds;
 		int err = dsl_dataset_hold_obj(dp, zb[i].zb_objset, FTAG, &ds);
 
+		if (err) {
+			return;
+		}
+
 		objset_t *os = ds->ds_objset;
 		dmu_object_info_t doi;
 		dmu_object_info(os, zb[i].zb_object, &doi);
