@@ -532,7 +532,7 @@ dsl_dataset_hold_obj(dsl_pool_t *dp, uint64_t dsobj, void *tag,
 	err = dmu_bonus_hold(mos, dsobj, tag, &dbuf);
 
 	#ifdef _KERNEL
-		printk("%s %d\n", "dsl_dataset_hold_obj 2", err);
+		printk("%s %d\n", "dsl_dataset_hold_obj 2, error is ", err);
 	#endif
 	if (err != 0)
 		return (err);
