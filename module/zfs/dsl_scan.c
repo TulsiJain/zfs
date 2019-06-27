@@ -909,10 +909,6 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	error_count -= zc.zc_nvlist_dst_size;
 
-	#ifdef _KERNEL
-		printk("%s\n", "hello 0");
-	#endif
-
 	// qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
 	for (int i = 0; i < error_count; i++) {
 		
@@ -931,10 +927,10 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		uint64_t indirect_block_size = doi.doi_metadata_block_size;
 		uint64_t data_block_size = doi.doi_data_block_size;
 
-		#ifdef _KERNEL
-			printk("indirect_block_size %llu", (u_longlong_t)indirect_block_size);
-			printk("data_block_size %llu", (u_longlong_t)data_block_size);
-		#endif
+		// #ifdef _KERNEL
+		// 	printk("indirect_block_size %llu", (u_longlong_t)indirect_block_size);
+		// 	printk("data_block_size %llu", (u_longlong_t)data_block_size);
+		// #endif
 
 		uint64_t blkptrs_in_ind =
 			    indirect_block_size / sizeof (blkptr_t);
@@ -944,6 +940,8 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 			    (blkptrs_in_ind^zb[i].zb_level) * (zb[i].zb_blkid + 1)*data_block_size;
 
 		#ifdef _KERNEL
+			printk("zb_level %lld", (u_longlong_t)zb[i].zb_level));
+			printk("zb_blkid %llu", (u_longlong_t)zb[i].zb_blkid);
 			printk("blkptrs_in_ind %llu", (u_longlong_t)blkptrs_in_ind);
 			printk("offset %llu", (u_longlong_t)offset);
 			printk("offset %llu", (u_longlong_t)offset_end);
