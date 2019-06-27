@@ -919,15 +919,10 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
 		dsl_dataset_t *ds;
+
+		int err = dsl_dataset_hold_obj(dp, zb[i].zb_objset, FTAG, &ds);
 		#ifdef _KERNEL
-			printk("%s\n", "hello 1");
-		#endif
-		int err = dsl_dataset_hold_obj(dp, zb[i].zb_object, FTAG, &ds);
-		#ifdef _KERNEL
-			printk("%s\n", "hello 1");
 			printk("%d\n", err);
-		#else	
-			printf("%d\n", err);
 		#endif
 		// objset_t *os = ds->ds_objset;
 		// dmu_object_info_t doi;
@@ -954,12 +949,12 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		// 	    (blkptrs_in_ind^zb[i].zb_level) * (zb[i].zb_blkid + 1);
 
 	 //        uint64_t len = offset_end - offset - 1;
-		// dmu_prefetch(ds->ds_objset, 
-		// 	zb[i].zb_object, 
-		// 	zb[i].zb_level, 
-		// 	offset,
-  //   			len, 
-  //   			ZIO_PRIORITY_NOW);
+		dmu_prefetch(ds->ds_objset, 
+			zb[i].zb_object, 
+			zb[i].zb_level, 
+			offset,
+    			len, 
+    			ZIO_PRIORITY_NOW);
 		// dsl_dataset_rele(ds, FTAG);
 
 	}

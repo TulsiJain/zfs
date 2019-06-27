@@ -387,6 +387,7 @@ dmu_bonus_hold(objset_t *os, uint64_t object, void *tag, dmu_buf_t **dbp)
 	dnode_t *dn;
 	int error;
 
+	// error occured in dnode_hold
 	error = dnode_hold(os, object, FTAG, &dn);
 
 	#ifdef _KERNEL
