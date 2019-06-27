@@ -518,9 +518,6 @@ dsl_dataset_hold_obj(dsl_pool_t *dp, uint64_t dsobj, void *tag,
     dsl_dataset_t **dsp)
 {
 
-	#ifdef _KERNEL
-		printk("%s\n", "dsl_dataset_hold_obj 1");
-	#endif
 	objset_t *mos = dp->dp_meta_objset;
 	dmu_buf_t *dbuf;
 	dsl_dataset_t *ds;
@@ -531,9 +528,6 @@ dsl_dataset_hold_obj(dsl_pool_t *dp, uint64_t dsobj, void *tag,
 
 	err = dmu_bonus_hold(mos, dsobj, tag, &dbuf);
 
-	#ifdef _KERNEL
-		printk("%s %d\n", "dsl_dataset_hold_obj 2, error is ", err);
-	#endif
 	if (err != 0)
 		return (err);
 
@@ -545,9 +539,6 @@ dsl_dataset_hold_obj(dsl_pool_t *dp, uint64_t dsobj, void *tag,
 	}
 
 
-	#ifdef _KERNEL
-		printk("%s\n", "dsl_dataset_hold_obj 3");
-	#endif
 	ds = dmu_buf_get_user(dbuf);
 	if (ds == NULL) {
 		dsl_dataset_t *winner = NULL;
@@ -565,10 +556,6 @@ dsl_dataset_hold_obj(dsl_pool_t *dp, uint64_t dsobj, void *tag,
 			dmu_buf_rele(dbuf, tag);
 			return (err);
 		}
-
-		#ifdef _KERNEL
-			printk("%s\n", "dsl_dataset_hold_obj 4");
-		#endif
 
 		mutex_init(&ds->ds_lock, NULL, MUTEX_DEFAULT, NULL);
 		mutex_init(&ds->ds_opening_lock, NULL, MUTEX_DEFAULT, NULL);
@@ -597,9 +584,6 @@ dsl_dataset_hold_obj(dsl_pool_t *dp, uint64_t dsobj, void *tag,
 			}
 		}
 
-		#ifdef _KERNEL
-			printk("%s\n", "dsl_dataset_hold_obj 5");
-		#endif
 
 		if (!ds->ds_is_snapshot) {
 			ds->ds_snapname[0] = '\0';
@@ -648,9 +632,6 @@ dsl_dataset_hold_obj(dsl_pool_t *dp, uint64_t dsobj, void *tag,
 			    ZPOOL_ERRATA_ZOL_8308_ENCRYPTION;
 		}
 
-		#ifdef _KERNEL
-			printk("%s\n", "dsl_dataset_hold_obj 6");
-		#endif
 
 		dsl_deadlist_open(&ds->ds_deadlist,
 		    mos, dsl_dataset_phys(ds)->ds_deadlist_obj);
@@ -703,10 +684,6 @@ dsl_dataset_hold_obj(dsl_pool_t *dp, uint64_t dsobj, void *tag,
 			}
 		}
 	}
-
-	#ifdef _KERNEL
-		printk("%s\n", "dsl_dataset_hold_obj 7");
-	#endif
 
 	ASSERT3P(ds->ds_dbuf, ==, dbuf);
 	ASSERT3P(dsl_dataset_phys(ds), ==, dbuf->db_data);

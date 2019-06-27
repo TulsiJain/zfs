@@ -915,7 +915,6 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	// qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
 	for (int i = 0; i < error_count; i++) {
-		// #ifdef _KERNEL
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_objset);
 			// printk("%llu\n", (u_longlong_t)zb[i].zb_blkid);
 		dsl_dataset_t *ds;
@@ -926,29 +925,45 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		#else	
 			printf("%d\n", err);
 		#endif
-		// objset_t *os = ds->ds_objset;
-		// dmu_object_info_t doi;
-		// dmu_object_info(os, zb[i].zb_object, &doi);
+		objset_t *os = ds->ds_objset;
+		dmu_object_info_t doi;
+		dmu_object_info(os, zb[i].zb_object, &doi);
 
-		// #ifdef _KERNEL
-		// 	printk("%s\n", "hello 2");
-		// #endif
+		#ifdef _KERNEL
+			printk("%s\n", "hello 2");
+		#endif
 		
-		// uint64_t indirect_block_size = doi.doi_metadata_block_size;
+		uint64_t indirect_block_size = doi.doi_metadata_block_size;
 
-		// #ifdef _KERNEL
-		// 	printk("%llu", (u_longlong_t)indirect_block_size);
-		// #else
-		// 	printf("%llu", (u_longlong_t)indirect_block_size);
-		// #endif
-		// uint64_t data_block_size = doi.doi_data_block_size;
+		#ifdef _KERNEL
+			printk("%llu", (u_longlong_t)indirect_block_size);
+		#else
+			printf("%llu", (u_longlong_t)indirect_block_size);
+		#endif
+		uint64_t data_block_size = doi.doi_data_block_size;
 
-		// uint64_t blkptrs_in_ind =
-		// 	    indirect_block_size / sizeof (blkptr_t);
-		// uint64_t offset =
-		// 	    (blkptrs_in_ind^zb[i].zb_level) * zb[i].zb_blkid;
-		// uint64_t offset_end =
-		// 	    (blkptrs_in_ind^zb[i].zb_level) * (zb[i].zb_blkid + 1);
+		uint64_t blkptrs_in_ind =
+			    indirect_block_size / sizeof (blkptr_t);
+		uint64_t offset =
+			    (blkptrs_in_ind^zb[i].zb_level) * zb[i].zb_blkid;
+		uint64_t offset_end =
+			    (blkptrs_in_ind^zb[i].zb_level) * (zb[i].zb_blkid + 1);
+
+
+		#ifdef _KERNEL
+			printk("%llu", (u_longlong_t)indirect_block_size);
+			printk("%llu", (u_longlong_t)blkptrs_in_ind);
+			printk("%llu", (u_longlong_t)offset);
+			printk("%llu", (u_longlong_t)offset_end);
+		#else
+			printf("%llu", (u_longlong_t)indirect_block_size);
+			printf("%llu", (u_longlong_t)blkptrs_in_ind);
+			printf("%llu", (u_longlong_t)offset);
+			printf("%llu", (u_longlong_t)offset_end);
+		#endif
+		#ifdef _KERNEL
+			printk("%s\n", "hello 2");
+		#endif
 
 	 //        uint64_t len = offset_end - offset - 1;
 		// dmu_prefetch(ds->ds_objset, 
@@ -957,7 +972,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		// 	offset,
   //   			len, 
   //   			ZIO_PRIORITY_NOW);
-		// dsl_dataset_rele(ds, FTAG);
+		dsl_dataset_rele(ds, FTAG);
 
 	}
 }

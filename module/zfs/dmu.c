@@ -390,17 +390,11 @@ dmu_bonus_hold(objset_t *os, uint64_t object, void *tag, dmu_buf_t **dbp)
 	// error occured in dnode_hold
 	error = dnode_hold(os, object, FTAG, &dn);
 
-	#ifdef _KERNEL
-		printk("%s %d\n", "dmu_bonus_hold 1", error);
-	#endif
 	if (error)
 		return (error);
 
 	error = dmu_bonus_hold_by_dnode(dn, tag, dbp, DMU_READ_NO_PREFETCH);
 
-	#ifdef _KERNEL
-		printk("%s %d\n", "dmu_bonus_hold 2", error);
-	#endif
 	dnode_rele(dn, FTAG);
 
 	return (error);
