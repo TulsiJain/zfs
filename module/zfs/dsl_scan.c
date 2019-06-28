@@ -933,9 +933,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	spa_errlog_drain(spa);
 	VERIFY(dmu_object_free(spa->spa_meta_objset, spa->spa_errlog_last, tx) == 0);
-	spa->spa_errlog_last = spa->spa_errlog_scrub;
-	spa->spa_errlog_scrub = 0;
-
+	
 
 	uint64_t error_count_again = spa_get_errlog_size(spa);
 	
@@ -971,6 +969,9 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		    ZIO_PRIORITY_NOW);
 		dsl_dataset_rele(ds, FTAG);
 	}
+	spa->spa_errlog_last = spa->spa_errlog_scrub;
+	spa->spa_errlog_scrub = 0;
+
 	spa_errlog_rotate(spa);
 	scn->scn_phys.scn_state = DSS_FINISHED;
 }

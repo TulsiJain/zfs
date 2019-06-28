@@ -678,9 +678,6 @@ txg_delay(dsl_pool_t *dp, uint64_t txg, hrtime_t delay, hrtime_t resolution)
 void
 txg_wait_synced(dsl_pool_t *dp, uint64_t txg)
 {
-	#ifdef _KERNEL
-		printk("%s\n", "entered txg_wait_synced" );
-	#endif
 	tx_state_t *tx = &dp->dp_tx;
 
 	ASSERT(!dsl_pool_config_held(dp));
@@ -701,9 +698,6 @@ txg_wait_synced(dsl_pool_t *dp, uint64_t txg)
 		cv_wait_io(&tx->tx_sync_done_cv, &tx->tx_sync_lock);
 	}
 	mutex_exit(&tx->tx_sync_lock);
-	#ifdef _KERNEL
-		printk("%s\n", "returned txg_wait_synced" );
-	#endif
 }
 
 /*

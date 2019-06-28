@@ -4596,7 +4596,6 @@ zpool_obj_to_path(zpool_handle_t *zhp, uint64_t dsobj, uint64_t obj,
 		if (mounted) {
 			(void) snprintf(pathname, len, "%s%s", mntpnt,
 			    zc.zc_value);
-			printf("%s \n", pathname);
 		} else {
 			(void) snprintf(pathname, len, "%s:%s",
 			    dsname, zc.zc_value);
