@@ -7318,12 +7318,6 @@ spa_scan_err(spa_t *spa)
 		printk("%s\n", "spa_scan_err entered" );
 	#endif
 
-	#ifdef _KERNEL
-		dsl_pool_t *dp = spa->spa_dsl_pool;
-		dsl_scan_t *scn = dp->dp_scan;
-		dsl_scan_phys_t scn_phys = scn->scn_phys;
-	#endif
-
 	return (dsl_scan_err(spa->spa_dsl_pool));
 }
 
