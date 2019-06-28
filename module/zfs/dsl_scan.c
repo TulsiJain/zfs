@@ -894,7 +894,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	spa_t *spa = dp->dp_spa;
 	// dsl_scan_t *scn = dp->dp_scan;
 
-	// zfs_cmd_t zc = {"\0"};
+	zfs_cmd_t zc = {"\0"};
 
 
 
