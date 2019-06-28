@@ -870,16 +870,16 @@ dsl_scrub_err_check(void *arg, dmu_tx_t *tx)
 
 }
 
-static uint64_t
-exponent(uint64_t x, int64_t y){
-	if (y == 0){
-		return 1;
-	}
-	for ( int i =2; i < y; i++){
-		x = x*x;
-	}
-	return x;
-}
+// static uint64_t
+// exponent(uint64_t x, int64_t y){
+// 	if (y == 0){
+// 		return 1;
+// 	}
+// 	for ( int i =2; i < y; i++){
+// 		x = x*x;
+// 	}
+// 	return x;
+// }
 
 static void
 dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
@@ -890,11 +890,11 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	// dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 
 	// pool_scrub_cmd_t *cmd = arg;
-	dsl_pool_t *dp = dmu_tx_pool(tx);
+	// dsl_pool_t *dp = dmu_tx_pool(tx);
 	spa_t *spa = dp->dp_spa;
 	// dsl_scan_t *scn = dp->dp_scan;
 
-	zfs_cmd_t zc = {"\0"};
+	// zfs_cmd_t zc = {"\0"};
 
 
 
