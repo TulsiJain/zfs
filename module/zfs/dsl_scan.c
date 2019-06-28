@@ -887,25 +887,28 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	#ifdef _KERNEL
 		printk("%s\n", "entered dsl_scrub_err_sync");
 	#endif
-	// dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
 
-	// pool_scrub_cmd_t *cmd = arg;
-	dsl_pool_t *dp = dmu_tx_pool(tx);
+	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
+	pool_scan_func_t *funcp = arg;
+	
+	dsl_pool_t *dp = scn->scn_dp;
 	spa_t *spa = dp->dp_spa;
-	// dsl_scan_t *scn = dp->dp_scan;
+
+	ASSERT(!dsl_scan_is_running(scn));
+	scn->scn_phys.scn_state = DSS_SCANNING;	
 
 	zfs_cmd_t zc = {"\0"};
 
-
-
 	uint64_t error_count = spa_get_errlog_size(spa);
+	if (error_count == 0){
+		return;
+	}
 	
 	#ifdef _KERNEL
-		printk("count is 1 %llu\n", (u_longlong_t)error_count);
+		printk("error_count %llu\n", (u_longlong_t)error_count);
 	#else
-		printf("count is 1 %llu\n", (u_longlong_t)error_count);
+		printf("error_count %llu\n", (u_longlong_t)error_count);
 	#endif
-
 
 	zc.zc_nvlist_dst = (uintptr_t)kmem_zalloc(error_count * sizeof (zbookmark_phys_t), KM_SLEEP);
 	zc.zc_nvlist_dst_size = error_count;
@@ -925,20 +928,20 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	error_count -= zc.zc_nvlist_dst_size;
 
 	VERIFY(dmu_object_free(spa->spa_meta_objset, spa->spa_errlog_last, tx) == 0);
+	spa->spa_errlog_last = spa->spa_errlog_scrub;
+	spa->spa_errlog_scrub = 0;
 
-	// uint64_t new_error_count = spa_get_errlog_size(spa);
 
-	// #ifdef _KERNEL
-	// 	printk("count is 1 %llu\n", (u_longlong_t)new_error_count);
-	// #else
-	// 	printf("count is 1 %llu\n", (u_longlong_t)new_error_count);
-	// #endif
-	// #ifdef _KERNEL
-	// 	printk("spa_errlog_last is 1 %llu\n", (u_longlong_t)spa->spa_errlog_last);
-	// 	printk("spa_errlog_scrub is 1 %llu\n", (u_longlong_t)spa->spa_errlog_scrub);
-	// 	printk("spa_errlist_last is 1 %lu\n", avl_numnodes(&spa->spa_errlist_last));
-	// 	printk("spa_errlist_scrub is 1 %lu\n", avl_numnodes(&spa->spa_errlist_scrub));
-	// #endif
+	uint64_t error_count_again = spa_get_errlog_size(spa);
+	if (error_count == 0){
+		return;
+	}
+	
+	#ifdef _KERNEL
+		printk("error_count_again %llu\n", (u_longlong_t)error_count_again);
+	#else
+		printf("error_count_again %llu\n", (u_longlong_t)error_count_again);
+	#endif
 
 	for (int i = 0; i < error_count; i++) {
 		
@@ -962,27 +965,12 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		uint64_t len =
 			    exponent(blkptrs_in_ind, zb[i].zb_level) * data_block_size;
 
-		// #ifdef _KERNEL
-		// 	printk("zb_level %lld", (u_longlong_t)zb[i].zb_level);
-		// 	printk("zb_blkid %llu", (u_longlong_t)zb[i].zb_blkid);
-		// 	printk("blkptrs_in_ind %llu", (u_longlong_t)blkptrs_in_ind);
-		// 	printk("offset %llu", (u_longlong_t)offset);
-		// 	printk("len %llu", (u_longlong_t)len);
-		// #endif
-
-		// #ifdef _KERNEL
-		// #else
-		// 	printf("%llu", (u_longlong_t)data_block_size);
-		// 	printf("%llu", (u_longlong_t)indirect_block_size);
-		// 	printf("%llu", (u_longlong_t)blkptrs_in_ind);
-		// 	printf("%llu", (u_longlong_t)offset);
-		// 	printf("%llu", (u_longlong_t)len);
-		// #endif
-
 		dmu_prefetch(os, zb[i].zb_object, zb[i].zb_level, offset, len,
 		    ZIO_PRIORITY_NOW);
 		dsl_dataset_rele(ds, FTAG);
 	}
+	spa_errlog_rotate(spa);
+	scn->scn_phys.scn_state = DSS_FINISHED;
 }
 
 
@@ -994,38 +982,6 @@ dsl_scan_err(dsl_pool_t *dp)
 	#ifdef _KERNEL
 		printk("%s\n", "entered dsl_scan_err");
 	#endif
-
-	/*
-	 * Purge all vdev caches and probe all devices.  We do this here
-	 * rather than in sync context because this requires a writer lock
-	 * on the spa_config lock, which we can't do from sync context.  The
-	 * spa_scrub_reopen flag indicates that vdev_open() should not
-	 * attempt to start another scrub.
-	 */
-	// spa_vdev_state_enter(spa, SCL_NONE);
-	// spa->spa_scrub_reopen = B_TRUE;
-	// vdev_reopen(spa->spa_root_vdev);
-	// spa->spa_scrub_reopen = B_FALSE;
-	// (void) spa_vdev_state_exit(spa, NULL, 0);
-
-	// if (func == POOL_SCAN_RESILVER) {
-	// 	dsl_resilver_restart(spa->spa_dsl_pool, 0);
-	// 	return (0);
-	// }
-
-	// if (func == POOL_SCAN_SCRUB && dsl_scan_is_paused_scrub(scn)) {
-
-	// 	/* got scrub start cmd, resume paused scrub */
-	// 	int err = dsl_scrub_set_pause_resume(scn->scn_dp,
-	// 	    POOL_SCRUB_NORMAL);
-	// 	if (err == 0) {
-	// 		spa_event_notify(spa, NULL, NULL, ESC_ZFS_SCRUB_RESUME);
-	// 		return (ECANCELED);
-	// 	}
-
-	// 	return (SET_ERROR(err));
-	// }
-
 	return (dsl_sync_task(spa_name(dp->dp_spa),
 	    dsl_scrub_err_check, dsl_scrub_err_setup_sync, NULL, 3,
 	    ZFS_SPACE_CHECK_RESERVED));

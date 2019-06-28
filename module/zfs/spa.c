@@ -7322,12 +7322,6 @@ spa_scan_err(spa_t *spa)
 		dsl_pool_t *dp = spa->spa_dsl_pool;
 		dsl_scan_t *scn = dp->dp_scan;
 		dsl_scan_phys_t scn_phys = scn->scn_phys;
-		printk("scn_start_time, %llu\n",  scn_phys.scn_start_time);
-		printk("scn_end_time, %llu\n",  scn_phys.scn_end_time);
-		printk("scn_to_examine, %llu\n",  scn_phys.scn_to_examine);
-		printk("scn_examined, %llu\n",  scn_phys.scn_examined);
-		printk("scn_errors, %llu\n",  scn_phys.scn_errors);
-		printk("scn_func, %llu\n",  scn_phys.scn_func);
 	#endif
 
 	return (dsl_scan_err(spa->spa_dsl_pool));
