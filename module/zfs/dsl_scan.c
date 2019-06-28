@@ -896,6 +896,8 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	zfs_cmd_t zc = {"\0"};
 
+
+
 	uint64_t error_count = spa_get_errlog_size(spa);
 	
 	#ifdef _KERNEL
@@ -918,6 +920,14 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	    zc.zc_nvlist_dst_size;
 
 	error_count -= zc.zc_nvlist_dst_size;
+
+
+	uint64_t new_error_count = new spa_errlog_drain(spa);
+	#ifdef _KERNEL
+		printk("new_error_count is 1 %llu\n", (u_longlong_t)new_error_count);
+	#else
+		printf("new_error_count is 1 %llu\n", (u_longlong_t)new_error_count);
+	#endif
 
 	// qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
 	for (int i = 0; i < error_count; i++) {
@@ -2156,9 +2166,6 @@ dsl_scan_visitdnode(dsl_scan_t *scn, dsl_dataset_t *ds,
     dmu_objset_type_t ostype, dnode_phys_t *dnp,
     uint64_t object, dmu_tx_t *tx)
 {
-	#ifdef _KERNEL
-		printk("%s", "entered dsl_scan_visitdnode");
-	#endif
 	int j;
 
 	for (j = 0; j < dnp->dn_nblkptr; j++) {
@@ -2177,9 +2184,6 @@ dsl_scan_visitdnode(dsl_scan_t *scn, dsl_dataset_t *ds,
 		dsl_scan_visitbp(DN_SPILL_BLKPTR(dnp),
 		    &czb, dnp, ds, scn, ostype, tx);
 	}
-	#ifdef _KERNEL
-		printk("%s", "entered dsl_scan_visitdnode");
-	#endif
 }
 
 /*
@@ -2191,9 +2195,6 @@ dsl_scan_visitbp(blkptr_t *bp, const zbookmark_phys_t *zb,
     dnode_phys_t *dnp, dsl_dataset_t *ds, dsl_scan_t *scn,
     dmu_objset_type_t ostype, dmu_tx_t *tx)
 {
-	#ifdef _KERNEL
-		printk("%s", "entered dsl_scan_visitbp");
-	#endif
 	dsl_pool_t *dp = scn->scn_dp;
 	blkptr_t *bp_toread = NULL;
 
@@ -2259,15 +2260,8 @@ dsl_scan_visitbp(blkptr_t *bp, const zbookmark_phys_t *zb,
 
 	scan_funcs[scn->scn_phys.scn_func](dp, bp, zb);
 
-	#ifdef _KERNEL
-		printk("%s", "returned dsl_scan_visitbp");
-	#endif
-
 out:
 	kmem_free(bp_toread, sizeof (blkptr_t));
-	#ifdef _KERNEL
-		printk("%s", "returned dsl_scan_visitbp");
-	#endif
 }
 
 static void
@@ -2883,9 +2877,6 @@ dsl_scan_ds_maxtxg(dsl_dataset_t *ds)
 static void
 dsl_scan_visit(dsl_scan_t *scn, dmu_tx_t *tx)
 {
-	#ifdef _KERNEL 
-		printk("%s\n", "entered dsl_scan_visit");
-	#endif
 	scan_ds_t *sds;
 	dsl_pool_t *dp = scn->scn_dp;
 
@@ -2972,18 +2963,12 @@ dsl_scan_visit(dsl_scan_t *scn, dmu_tx_t *tx)
 	scn->scn_phys.scn_bookmark.zb_objset = ZB_DESTROYED_OBJSET;
 	ASSERT0(scn->scn_suspending);
 
-	#ifdef _KERNEL 
-		printk("%s\n", "returned dsl_scan_visit");
-	#endif
 }
 
 static uint64_t
 dsl_scan_count_leaves(vdev_t *vd)
 {
 	uint64_t i, leaves = 0;
-	#ifdef _KERNEL 
-		printk("%s\n", "entered dsl_scan_count_leaves");
-	#endif
 
 	/* we only count leaves that belong to the main pool and are readable */
 	if (vd->vdev_islog || vd->vdev_isspare ||
@@ -2997,19 +2982,12 @@ dsl_scan_count_leaves(vdev_t *vd)
 		leaves += dsl_scan_count_leaves(vd->vdev_child[i]);
 	}
 
-	#ifdef _KERNEL 
-		printk("%s\n", "returned dsl_scan_count_leaves");
-	#endif
 	return (leaves);
 }
 
 static void
 scan_io_queues_update_zio_stats(dsl_scan_io_queue_t *q, const blkptr_t *bp)
 {
-	#ifdef _KERNEL 
-		printk("%s\n", "entered scan_io_queues_update_zio_stats");
-	#endif
-
 	int i;
 	uint64_t cur_size = 0;
 
