@@ -384,9 +384,10 @@ spa_errlog_sync(spa_t *spa, uint64_t txg)
 	avl_tree_t scrub, last;
 	int scrub_finished;
 
-	// #if _KERNEL
-	// 	printk("%s\n", "entered spa_errlog_sync");
-	// #endif
+	#if _KERNEL
+		printk("spa_errlist_scrub %lu\n", (ulong_t)avl_numnodes(&spa->spa_errlist_scrub));
+		printk("spa_errlist_last %lu\n", (ulong_t)avl_numnodes(&spa->spa_errlist_last));
+	#endif
 
 	mutex_enter(&spa->spa_errlist_lock);
 
@@ -396,6 +397,9 @@ spa_errlog_sync(spa_t *spa, uint64_t txg)
 	if (avl_numnodes(&spa->spa_errlist_scrub) == 0 &&
 	    avl_numnodes(&spa->spa_errlist_last) == 0 &&
 	    !spa->spa_scrub_finished) {
+	    	#if _KERNEL
+	    		printk("Bail out early under normal circumstances \n");
+	    	#endif
 		mutex_exit(&spa->spa_errlist_lock);
 		return;
 	}

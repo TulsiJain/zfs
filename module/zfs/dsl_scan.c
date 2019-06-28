@@ -923,14 +923,15 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	// error_count -= zc.zc_nvlist_dst_size;
 
-	spa_errlog_drain(spa);
-	spa_errlog_sync(spa, tx->tx_txg);
+	// spa_errlog_drain(spa);
+	// spa_errlog_sync(spa, tx->tx_txg);
 	
-	uint64_t new_error_count = spa_get_errlog_size(spa);
+	// uint64_t new_error_count = spa_get_errlog_size(spa);
 	#ifdef _KERNEL
-		printk("new_error_count is 1 %llu\n", (u_longlong_t)new_error_count);
-	#else
-		printf("new_error_count is 1 %llu\n", (u_longlong_t)new_error_count);
+		printk("spa_errlog_last is 1 %llu\n", (u_longlong_t)spa->spa_errlog_last);
+		printk("spa_errlog_scrub is 1 %llu\n", (u_longlong_t)spa->spa_errlog_scrub);
+		printk("spa_errlist_last is 1 %llu\n", avl_numnodes(spa->spa_errlist_last));
+		printk("spa_errlist_scrub is 1 %llu\n", avl_numnodes(spa->spa_errlist_scrub));
 	#endif
 
 	// for (int i = 0; i < error_count; i++) {
@@ -3000,9 +3001,6 @@ scan_io_queues_update_zio_stats(dsl_scan_io_queue_t *q, const blkptr_t *bp)
 
 	q->q_total_zio_size_this_txg += cur_size;
 	q->q_zios_this_txg++;
-	#ifdef _KERNEL 
-		printk("%s\n", "returned scan_io_queues_update_zio_stats");
-	#endif
 }
 
 static void
