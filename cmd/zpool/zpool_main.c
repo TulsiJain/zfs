@@ -6682,8 +6682,6 @@ scrub_callback(zpool_handle_t *zhp, void *data)
 	scrub_cbdata_t *cb = data;
 	int err;
 
-	printf("%s\n", "scrub_callback");
-
 	/*
 	 * Ignore faulted pools.
 	 */
@@ -6695,8 +6693,6 @@ scrub_callback(zpool_handle_t *zhp, void *data)
 
 	err = zpool_scan(zhp, cb->cb_type, cb->cb_scrub_cmd);
 
-
-	printf("scrub_callback err %d\n", err);
 
 	if (err == 0 && zpool_has_checkpoint(zhp) &&
 	    (cb->cb_type == POOL_SCAN_SCRUB || cb->cb_type ==
@@ -6718,7 +6714,6 @@ scrub_callback(zpool_handle_t *zhp, void *data)
 int
 zpool_do_scrub(int argc, char **argv)
 {
-	printf("%s\n", "I am zpool scrub is called bro");
 	int c;
 	scrub_cbdata_t cb;
 
@@ -7293,9 +7288,6 @@ print_error_log(zpool_handle_t *zhp)
 		    &indirect_block_size);
 
 		printf("Total error in this file is %u\n", error_count);
-		printf("data_block_size is %lu\n", data_block_size);
-		printf("indirect_block_size is %lu\n", 
-			indirect_block_size);
 
 		if (error_count > 0){
 			uint64_t blkptrs_in_indblk = indirect_block_size/128;

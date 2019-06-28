@@ -2323,7 +2323,6 @@ zpool_trim(zpool_handle_t *zhp, pool_trim_func_t cmd_type, nvlist_t *vds,
 int
 zpool_scan(zpool_handle_t *zhp, pool_scan_func_t func, pool_scrub_cmd_t cmd)
 {
-	printf("%s\n",  "zpool_scan started");
 	zfs_cmd_t zc = {"\0"};
 	char msg[1024];
 	int err;
@@ -4180,9 +4179,6 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	zb = ((zbookmark_phys_t *)(uintptr_t)zc.zc_nvlist_dst) +
 	    zc.zc_nvlist_dst_size;
 	count -= zc.zc_nvlist_dst_size;
-
-	printf("can not copy %llu\n", (u_longlong_t)zc.zc_nvlist_dst_size);
-	printf("count is %llu\n", (u_longlong_t)count);
 
 	qsort(zb, count, sizeof (zbookmark_phys_t), zbookmark_mem_compare);
 

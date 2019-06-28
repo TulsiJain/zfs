@@ -341,7 +341,6 @@ check_status(nvlist_t *config, boolean_t isimport, zpool_errata_t *erratap)
 	if (!isimport) {
 		if (nvlist_lookup_uint64(config, ZPOOL_CONFIG_ERRCOUNT,
 		    &nerr) == 0 && nerr != 0){
-		    	printf("nerr count is %llu\n", (u_longlong_t) nerr);
 			return (ZPOOL_STATUS_CORRUPT_DATA);
 		}
 	}
