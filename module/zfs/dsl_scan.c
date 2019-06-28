@@ -930,8 +930,8 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	#ifdef _KERNEL
 		printk("spa_errlog_last is 1 %llu\n", (u_longlong_t)spa->spa_errlog_last);
 		printk("spa_errlog_scrub is 1 %llu\n", (u_longlong_t)spa->spa_errlog_scrub);
-		printk("spa_errlist_last is 1 %llu\n", avl_numnodes(spa->spa_errlist_last));
-		printk("spa_errlist_scrub is 1 %llu\n", avl_numnodes(spa->spa_errlist_scrub));
+		printk("spa_errlist_last is 1 %llu\n", avl_numnodes(&spa->spa_errlist_last));
+		printk("spa_errlist_scrub is 1 %llu\n", avl_numnodes(&spa->spa_errlist_scrub));
 	#endif
 
 	// for (int i = 0; i < error_count; i++) {
