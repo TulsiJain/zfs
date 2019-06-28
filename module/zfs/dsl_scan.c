@@ -908,83 +908,80 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	VERIFY(dmu_object_free(spa->spa_meta_objset, spa->spa_errlog_last, tx) == 0);
 
-	// zc.zc_nvlist_dst = (uintptr_t)kmem_zalloc(error_count * sizeof (zbookmark_phys_t), KM_SLEEP);
-	// zc.zc_nvlist_dst_size = error_count;
+	zc.zc_nvlist_dst = (uintptr_t)kmem_zalloc(error_count * sizeof (zbookmark_phys_t), KM_SLEEP);
+	zc.zc_nvlist_dst_size = error_count;
 
-	// size_t retrieved_error = (size_t)zc.zc_nvlist_dst_size;
-	// int error = spa_get_errlog(spa, (void *)(uintptr_t)zc.zc_nvlist_dst,
-	//     &retrieved_error);
+	size_t retrieved_error = (size_t)zc.zc_nvlist_dst_size;
+	int error = spa_get_errlog(spa, (void *)(uintptr_t)zc.zc_nvlist_dst,
+	    &retrieved_error);
 
-	// if (error == 0){
-	// 	zc.zc_nvlist_dst_size = retrieved_error;
-	// }
+	if (error == 0){
+		zc.zc_nvlist_dst_size = retrieved_error;
+	}
 
-	// zbookmark_phys_t *zb = NULL;
-	// zb = ((zbookmark_phys_t *)(uintptr_t)zc.zc_nvlist_dst) +
-	//     zc.zc_nvlist_dst_size;
+	zbookmark_phys_t *zb = NULL;
+	zb = ((zbookmark_phys_t *)(uintptr_t)zc.zc_nvlist_dst) +
+	    zc.zc_nvlist_dst_size;
 
-	// error_count -= zc.zc_nvlist_dst_size;
+	error_count -= zc.zc_nvlist_dst_size;
 
-	// spa_errlog_drain(spa);
-	// spa_errlog_sync(spa, tx->tx_txg);
-	
-	uint64_t new_error_count = spa_get_errlog_size(spa);
+	// uint64_t new_error_count = spa_get_errlog_size(spa);
 
-	#ifdef _KERNEL
-		printk("count is 1 %llu\n", (u_longlong_t)new_error_count);
-	#else
-		printf("count is 1 %llu\n", (u_longlong_t)new_error_count);
-	#endif
-	#ifdef _KERNEL
-		printk("spa_errlog_last is 1 %llu\n", (u_longlong_t)spa->spa_errlog_last);
-		printk("spa_errlog_scrub is 1 %llu\n", (u_longlong_t)spa->spa_errlog_scrub);
-		printk("spa_errlist_last is 1 %lu\n", avl_numnodes(&spa->spa_errlist_last));
-		printk("spa_errlist_scrub is 1 %lu\n", avl_numnodes(&spa->spa_errlist_scrub));
-	#endif
+	// #ifdef _KERNEL
+	// 	printk("count is 1 %llu\n", (u_longlong_t)new_error_count);
+	// #else
+	// 	printf("count is 1 %llu\n", (u_longlong_t)new_error_count);
+	// #endif
+	// #ifdef _KERNEL
+	// 	printk("spa_errlog_last is 1 %llu\n", (u_longlong_t)spa->spa_errlog_last);
+	// 	printk("spa_errlog_scrub is 1 %llu\n", (u_longlong_t)spa->spa_errlog_scrub);
+	// 	printk("spa_errlist_last is 1 %lu\n", avl_numnodes(&spa->spa_errlist_last));
+	// 	printk("spa_errlist_scrub is 1 %lu\n", avl_numnodes(&spa->spa_errlist_scrub));
+	// #endif
 
-	// for (int i = 0; i < error_count; i++) {
+	for (int i = 0; i < error_count; i++) {
 		
-	// 	dsl_dataset_t *ds;
-	// 	int err = dsl_dataset_hold_obj(dp, zb[i].zb_objset, FTAG, &ds);
+		dsl_dataset_t *ds;
+		int err = dsl_dataset_hold_obj(dp, zb[i].zb_objset, FTAG, &ds);
 
-	// 	if (err) {
-	// 		return;
-	// 	}
+		if (err) {
+			return;
+		}
 
-	// 	objset_t *os = ds->ds_objset;
-	// 	dmu_object_info_t doi;
-	// 	dmu_object_info(os, zb[i].zb_object, &doi);
+		objset_t *os = ds->ds_objset;
+		dmu_object_info_t doi;
+		dmu_object_info(os, zb[i].zb_object, &doi);
 		
-	// 	uint64_t indirect_block_size = doi.doi_metadata_block_size;
-	// 	uint64_t data_block_size = doi.doi_data_block_size;
-	// 	uint64_t blkptrs_in_ind =
-	// 		    indirect_block_size / sizeof (blkptr_t);
-	// 	uint64_t offset =
-	// 		    exponent(blkptrs_in_ind, zb[i].zb_level) * zb[i].zb_blkid * data_block_size;
-	// 	uint64_t len =
-	// 		    exponent(blkptrs_in_ind, zb[i].zb_level) * data_block_size;
+		uint64_t indirect_block_size = doi.doi_metadata_block_size;
+		uint64_t data_block_size = doi.doi_data_block_size;
+		uint64_t blkptrs_in_ind =
+			    indirect_block_size / sizeof (blkptr_t);
+		uint64_t offset =
+			    exponent(blkptrs_in_ind, zb[i].zb_level) * zb[i].zb_blkid * data_block_size;
+		uint64_t len =
+			    exponent(blkptrs_in_ind, zb[i].zb_level) * data_block_size;
 
-	// 	// #ifdef _KERNEL
-	// 	// 	printk("zb_level %lld", (u_longlong_t)zb[i].zb_level);
-	// 	// 	printk("zb_blkid %llu", (u_longlong_t)zb[i].zb_blkid);
-	// 	// 	printk("blkptrs_in_ind %llu", (u_longlong_t)blkptrs_in_ind);
-	// 	// 	printk("offset %llu", (u_longlong_t)offset);
-	// 	// 	printk("len %llu", (u_longlong_t)len);
-	// 	// #endif
+		// #ifdef _KERNEL
+		// 	printk("zb_level %lld", (u_longlong_t)zb[i].zb_level);
+		// 	printk("zb_blkid %llu", (u_longlong_t)zb[i].zb_blkid);
+		// 	printk("blkptrs_in_ind %llu", (u_longlong_t)blkptrs_in_ind);
+		// 	printk("offset %llu", (u_longlong_t)offset);
+		// 	printk("len %llu", (u_longlong_t)len);
+		// #endif
 
-	// 	// #ifdef _KERNEL
-	// 	// #else
-	// 	// 	printf("%llu", (u_longlong_t)data_block_size);
-	// 	// 	printf("%llu", (u_longlong_t)indirect_block_size);
-	// 	// 	printf("%llu", (u_longlong_t)blkptrs_in_ind);
-	// 	// 	printf("%llu", (u_longlong_t)offset);
-	// 	// 	printf("%llu", (u_longlong_t)len);
-	// 	// #endif
+		// #ifdef _KERNEL
+		// #else
+		// 	printf("%llu", (u_longlong_t)data_block_size);
+		// 	printf("%llu", (u_longlong_t)indirect_block_size);
+		// 	printf("%llu", (u_longlong_t)blkptrs_in_ind);
+		// 	printf("%llu", (u_longlong_t)offset);
+		// 	printf("%llu", (u_longlong_t)len);
+		// #endif
 
-	// 	dmu_prefetch(os, zb[i].zb_object, zb[i].zb_level, offset, len,
-	// 	    ZIO_PRIORITY_NOW);
-	// 	dsl_dataset_rele(ds, FTAG);
-	// }
+		dmu_prefetch(os, zb[i].zb_object, zb[i].zb_level, offset, len,
+		    ZIO_PRIORITY_NOW);
+		dsl_dataset_rele(ds, FTAG);
+	}
 }
 
 
