@@ -899,16 +899,21 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	zfs_cmd_t zc = {"\0"};
 
 	uint64_t error_count = spa_get_errlog_size(spa);
-	if (error_count == 0){
-		return;
-	}
-	
+
 	#ifdef _KERNEL
 		printk("error_count %llu\n", (u_longlong_t)error_count);
 	#else
 		printf("error_count %llu\n", (u_longlong_t)error_count);
 	#endif
-
+		
+	if (error_count == 0){
+		spa_errlog_rotate(spa);
+		scn->scn_phys.scn_state = DSS_FINISHED;
+		#ifdef _KERNEL
+			printk("Pool has no error! stopping scrub!\n");
+		#endif
+		return;
+	}
 	zc.zc_nvlist_dst = (uintptr_t)kmem_zalloc(error_count * sizeof (zbookmark_phys_t), KM_SLEEP);
 	zc.zc_nvlist_dst_size = error_count;
 
@@ -932,9 +937,6 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 
 	uint64_t error_count_again = spa_get_errlog_size(spa);
-	if (error_count == 0){
-		return;
-	}
 	
 	#ifdef _KERNEL
 		printk("error_count_again %llu\n", (u_longlong_t)error_count_again);
