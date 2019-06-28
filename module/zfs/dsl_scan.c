@@ -906,6 +906,8 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 		printf("count is 1 %llu\n", (u_longlong_t)error_count);
 	#endif
 
+	VERIFY(dmu_object_free(spa->spa_meta_objset, spa->spa_errlog_last, tx) == 0);
+
 	// zc.zc_nvlist_dst = (uintptr_t)kmem_zalloc(error_count * sizeof (zbookmark_phys_t), KM_SLEEP);
 	// zc.zc_nvlist_dst_size = error_count;
 
@@ -926,7 +928,13 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	// spa_errlog_drain(spa);
 	// spa_errlog_sync(spa, tx->tx_txg);
 	
-	// uint64_t new_error_count = spa_get_errlog_size(spa);
+	uint64_t new_error_count = spa_get_errlog_size(spa);
+
+	#ifdef _KERNEL
+		printk("count is 1 %llu\n", (u_longlong_t)new_error_count);
+	#else
+		printf("count is 1 %llu\n", (u_longlong_t)new_error_count);
+	#endif
 	#ifdef _KERNEL
 		printk("spa_errlog_last is 1 %llu\n", (u_longlong_t)spa->spa_errlog_last);
 		printk("spa_errlog_scrub is 1 %llu\n", (u_longlong_t)spa->spa_errlog_scrub);
