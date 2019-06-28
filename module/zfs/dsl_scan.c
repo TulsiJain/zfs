@@ -889,7 +889,6 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	#endif
 
 	dsl_scan_t *scn = dmu_tx_pool(tx)->dp_scan;
-	pool_scan_func_t *funcp = arg;
 	
 	dsl_pool_t *dp = scn->scn_dp;
 	spa_t *spa = dp->dp_spa;
