@@ -5337,8 +5337,7 @@ zfs_ioc_error_log(zfs_cmd_t *zc)
 	printk("SPA opened successfully \n");
 	error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
 	    &count);
-	
-	printk("error count is %d\n", error);
+
 	printk("count is kernel is %zu\n", count);
 	if (error == 0){
 		zc->zc_nvlist_dst_size = count;
