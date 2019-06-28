@@ -905,7 +905,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 	#else
 		printf("error_count %llu\n", (u_longlong_t)error_count);
 	#endif
-		
+
 	if (error_count == 0){
 		spa_errlog_rotate(spa);
 		scn->scn_phys.scn_state = DSS_FINISHED;
@@ -931,6 +931,7 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	error_count -= zc.zc_nvlist_dst_size;
 
+	spa_errlog_drain(spa);
 	VERIFY(dmu_object_free(spa->spa_meta_objset, spa->spa_errlog_last, tx) == 0);
 	spa->spa_errlog_last = spa->spa_errlog_scrub;
 	spa->spa_errlog_scrub = 0;

@@ -203,7 +203,6 @@ find_vdev_problem(nvlist_t *vdev, int (*func)(uint64_t, uint64_t, uint64_t))
 static zpool_status_t
 check_status(nvlist_t *config, boolean_t isimport, zpool_errata_t *erratap)
 {
-	printf("%s\n", "check_status called");
 	nvlist_t *nvroot;
 	vdev_stat_t *vs;
 	pool_scan_stat_t *ps = NULL;
@@ -340,7 +339,6 @@ check_status(nvlist_t *config, boolean_t isimport, zpool_errata_t *erratap)
 	 * Persistent data errors.
 	 */
 	if (!isimport) {
-		printf("%s\n", "import is false" );
 		if (nvlist_lookup_uint64(config, ZPOOL_CONFIG_ERRCOUNT,
 		    &nerr) == 0 && nerr != 0){
 		    	printf("nerr count is %llu\n", (u_longlong_t) nerr);
@@ -422,7 +420,6 @@ check_status(nvlist_t *config, boolean_t isimport, zpool_errata_t *erratap)
 zpool_status_t
 zpool_get_status(zpool_handle_t *zhp, char **msgid, zpool_errata_t *errata)
 {
-	printf("%s\n", "zpool_get_status called");
 	zpool_status_t ret = check_status(zhp->zpool_config, B_FALSE, errata);
 	if (msgid != NULL) {
 		if (ret >= NMSGID)

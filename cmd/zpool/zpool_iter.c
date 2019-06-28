@@ -244,7 +244,6 @@ int
 for_each_pool(int argc, char **argv, boolean_t unavail,
     zprop_list_t **proplist, zpool_iter_f func, void *data)
 {
-	printf("%s\n", "for_each_pool started");
 	zpool_list_t *list;
 	int ret = 0;
 

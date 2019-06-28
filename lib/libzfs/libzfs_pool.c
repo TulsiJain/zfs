@@ -4119,9 +4119,6 @@ zbookmark_mem_compare(const void *a, const void *b)
 int
 zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 {
-	printf("%s\n", "zpool_get_errlog called");
-	printf("zpool_config_size is %zu\n", zhp->zpool_config_size) ;
-	
 	zfs_cmd_t zc = {"\0"};
 	
 	libzfs_handle_t *hdl = zhp->zpool_hdl;
@@ -4150,7 +4147,6 @@ zpool_get_errlog(zpool_handle_t *zhp, nvlist_t **nverrlistp)
 	
 	(void) strcpy(zc.zc_name, zhp->zpool_name);
 	for (;;) {
-		printf("infinite for loop executing \n");
 		if (ioctl(zhp->zpool_hdl->libzfs_fd, ZFS_IOC_ERROR_LOG,
 		    &zc) != 0) {
 			free((void *)(uintptr_t)zc.zc_nvlist_dst);

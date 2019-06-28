@@ -7256,9 +7256,6 @@ print_checkpoint_status(pool_checkpoint_stat_t *pcs)
 static void
 print_error_log(zpool_handle_t *zhp)
 {
-	printf("%s\n", "print_error_log");
-
-	printf("%s\n", "print_error_log zpool_handle_t printing");
 
 	nvlist_t *nverrlist = NULL;
 	nvpair_t *elem;
@@ -7275,7 +7272,6 @@ print_error_log(zpool_handle_t *zhp)
 	pathname = safe_malloc(len);
 	elem = NULL;
 	while ((elem = nvlist_next_nvpair(nverrlist, elem)) != NULL) {
-		printf("%s\n", "print_error_log while" );
 
 		nvlist_t *nv;
 		uint64_t dsobj, obj,  data_block_size, indirect_block_size;
@@ -7780,7 +7776,6 @@ status_callback(zpool_handle_t *zhp, void *data)
 		    &spares, &nspares) == 0)
 			print_spares(zhp, cbp, spares, nspares);
 
-		printf("%s\n", "here I am calling nvlist_lookup_uint64 again for error_count");
 
 		if (nvlist_lookup_uint64(config, ZPOOL_CONFIG_ERRCOUNT,
 		    &nerr) == 0) {
