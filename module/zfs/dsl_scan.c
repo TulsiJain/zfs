@@ -923,8 +923,8 @@ dsl_scrub_err_setup_sync(void *arg, dmu_tx_t *tx)
 
 	// error_count -= zc.zc_nvlist_dst_size;
 
-	// spa_errlog_drain(spa);
-	// spa_errlog_sync(spa, tx->tx_txg);
+	spa_errlog_drain(spa);
+	spa_errlog_sync(spa, tx->tx_txg);
 	
 	uint64_t new_error_count = spa_get_errlog_size(spa);
 	#ifdef _KERNEL
