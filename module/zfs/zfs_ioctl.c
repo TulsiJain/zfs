@@ -5326,7 +5326,6 @@ zfs_ioc_inject_list_next(zfs_cmd_t *zc)
 static int
 zfs_ioc_error_log(zfs_cmd_t *zc)
 {
-	printk("%s\n", "Bro I am called can you see me" );
 	spa_t *spa;
 	int error;
 	size_t count = (size_t)zc->zc_nvlist_dst_size;
@@ -5334,17 +5333,14 @@ zfs_ioc_error_log(zfs_cmd_t *zc)
 	if ((error = spa_open(zc->zc_name, &spa, FTAG)) != 0)
 		return (error);
 
-	printk("SPA opened successfully \n");
 	error = spa_get_errlog(spa, (void *)(uintptr_t)zc->zc_nvlist_dst,
 	    &count);
 
-	printk("count is kernel is %zu\n", count);
 	if (error == 0){
 		zc->zc_nvlist_dst_size = count;
 	}
 	else{
 		zc->zc_nvlist_dst_size = spa_get_errlog_size(spa);
-		printk("spa get_errlog size is %llu\n", zc->zc_nvlist_dst_size);
 	}
 	spa_close(spa, FTAG);
 	return (error);
