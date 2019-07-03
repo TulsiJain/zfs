@@ -4808,8 +4808,6 @@ arc_reduce_target_size(int64_t to_free)
 	if (c > to_free && c - to_free > arc_c_min) {
 		arc_c = c - to_free;
 		atomic_add_64(&arc_p, -(arc_p >> arc_shrink_shift));
-		if (asize < arc_c)
-			arc_c = MAX(asize, arc_c_min);
 		if (arc_p > arc_c)
 			arc_p = (arc_c >> 1);
 		ASSERT(arc_c >= arc_c_min);
@@ -5615,7 +5613,7 @@ arc_get_data_impl(arc_buf_hdr_t *hdr, uint64_t size, void *tag)
 		 * If we are growing the cache, and we are adding anonymous
 		 * data, and we have outgrown arc_p, update arc_p
 		 */
-		if (aggsum_compare(&arc_size, arc_c) < 0 &&
+		if (aggsum_upper_bound(&arc_size) < arc_c &&
 		    hdr->b_l1hdr.b_state == arc_anon &&
 		    (zfs_refcount_count(&arc_anon->arcs_size) +
 		    zfs_refcount_count(&arc_mru->arcs_size) > arc_p))
@@ -6172,6 +6170,8 @@ arc_read(zio_t *pio, spa_t *spa, const blkptr_t *bp,
 
 	ASSERT(!embedded_bp ||
 	    BPE_GET_ETYPE(bp) == BP_EMBEDDED_TYPE_DATA);
+	ASSERT(!BP_IS_HOLE(bp));
+	ASSERT(!BP_IS_REDACTED(bp));
 
 top:
 	if (!embedded_bp) {
